@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Hooks",
-    "\\obj",
+    "\\bin",
+    "\\bin\\Debug",
+    "\\bin\\Debug\\netstandard2.1",
     "\\obj\\Debug",
     "\\obj\\Debug\\netstandard2.1",
     "\\obj\\Debug\\netstandard2.1\\publicized",
@@ -10,5 +11,6 @@
     "\\obj\\Release\\netstandard2.1",
     "\\obj\\Release\\netstandard2.1\\publicized"
   ],
+  "SelectedNode": "\\bin\\Debug\\netstandard2.1\\alexandria-p.KeepCameraAfterDeath.dll",
   "PreviewInSolutionExplorer": false
 }

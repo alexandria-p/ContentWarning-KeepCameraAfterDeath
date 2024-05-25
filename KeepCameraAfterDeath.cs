@@ -71,7 +71,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetEnableRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Award incentives for bringing the camera back to the surface (overrides values below)";
+        public string GetDisplayName() => "Award incentives for bringing the camera back to the surface (OVERRIDES any values below)";
 
         protected override bool GetDefaultValue() => true;
     }
@@ -81,11 +81,11 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         public override void ApplyValue()
         {
-            KeepCameraAfterDeath.Logger.LogInfo($"Meta Coin (MC) Reward for camera return: {Value}");
+            KeepCameraAfterDeath.Logger.LogInfo($"Meta Coin (MC) reward for camera return: {Value}");
             KeepCameraAfterDeath.Instance.SetMetaCoinRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Meta Coin (MC) Reward for camera return";
+        public string GetDisplayName() => "Meta Coin (MC) reward for camera return";
 
         protected override int GetDefaultValue() => 25;
 
@@ -97,11 +97,11 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         public override void ApplyValue()
         {
-            KeepCameraAfterDeath.Logger.LogInfo($"Cash Reward for camera return: {Value}");
+            KeepCameraAfterDeath.Logger.LogInfo($"Cash reward for camera return: {Value}");
             KeepCameraAfterDeath.Instance.SetCashRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Cash Reward for camera return";
+        public string GetDisplayName() => "Cash reward for camera return";
 
         protected override int GetDefaultValue() => 0;
 
