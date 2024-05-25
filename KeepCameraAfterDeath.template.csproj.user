@@ -1,0 +1,26 @@
+<Project>
+    <!-- Local Variables -->
+    <PropertyGroup>
+        <GameDirectory>%programfiles(x86)%/Steam/steamapps/Common/Content Warning/</GameDirectory>
+        <PluginsDirectory>%programfiles(x86)%/Steam/steamapps/Common/Content Warning/BepInEx/plugins/</PluginsDirectory>
+    </PropertyGroup>
+
+    <!-- Game Directories - Do Not Modify -->
+    <PropertyGroup>
+        <ManagedDirectory>$(GameDirectory)Content Warning_Data/Managed/</ManagedDirectory>
+    </PropertyGroup>
+
+    <!-- MMMHOOK Directories - Do Not Modify -->
+    <PropertyGroup>
+        <MMHOOK>$(PluginsDirectory)MMHOOK/</MMHOOK>
+        <MMHOOKManaged>$(MMHOOK)Managed/</MMHOOKManaged>
+        <MMHOOKplugins>$(MMHOOK)plugins/</MMHOOKplugins>
+        <MMHOOKpatchers>$(MMHOOK)patchers/</MMHOOKpatchers>
+        <MMHOOKcore>$(MMHOOK)core/</MMHOOKcore>
+    </PropertyGroup>
+
+    <!-- Copy to Plugin Directory for Quicker Testing -->
+    <Target Name="CopyFiles" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginsDirectory)"/>
+    </Target>
+</Project>
