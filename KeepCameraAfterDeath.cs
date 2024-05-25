@@ -24,9 +24,6 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         Logger = base.Logger;
         Instance = this;
 
-        //SettingsLoader.RegisterSetting("KeepCameraAfterDeath Mod Settings", new EnableRewardForCameraReturnSetting());
-
-
         HookAll();
 
         Logger.LogInfo($"{"alexandria-p.KeepCameraAfterDeath"} v{"1.0.0"} has loaded!");
@@ -45,11 +42,6 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         Logger.LogDebug("Unhooking...");
 
-        /*
-         *  HookEndpointManager is from MonoMod.RuntimeDetour.HookGen, and is used by the MMHOOK assemblies.
-         *  We can unhook all methods hooked with HookGen using this.
-         *  Or we can unsubscribe specific patch methods with 'On.Namespace.Type.Method -= CustomMethod;'
-         */
         HookEndpointManager.RemoveAllOwnedBy(Assembly.GetExecutingAssembly());
 
         Logger.LogDebug("Finished Unhooking!");
@@ -70,7 +62,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         CashRewardForCameraReturn = cashReward;
     }
 
-    [SettingRegister("KeepCameraAfterDeath")]
+    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
     public class EnableRewardForCameraReturnSetting : BoolSetting, ICustomSetting
     {
         public override void ApplyValue()
@@ -79,12 +71,12 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetEnableRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Award MC as an incentive for bringing the camera back to the surface (overrides MC value below)";
+        public string GetDisplayName() => "Award incentives for bringing the camera back to the surface (overrides values below)";
 
         protected override bool GetDefaultValue() => true;
     }
 
-    [SettingRegister("KeepCameraAfterDeath")]
+    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
     public class SetMetaCoinRewardForCameraReturnSetting : IntSetting, ICustomSetting
     {
         public override void ApplyValue()
@@ -93,14 +85,14 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetMetaCoinRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Integer Feature";
+        public string GetDisplayName() => "Meta Coin (MC) Reward for camera return";
 
         protected override int GetDefaultValue() => 25;
 
         override protected (int, int) GetMinMaxValue() => (0, 100);
     }
 
-    [SettingRegister("KeepCameraAfterDeath")]
+    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
     public class SetCashRewardForCameraReturnSetting : IntSetting, ICustomSetting
     {
         public override void ApplyValue()
@@ -109,7 +101,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetCashRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Integer Feature";
+        public string GetDisplayName() => "Cash Reward for camera return";
 
         protected override int GetDefaultValue() => 0;
 

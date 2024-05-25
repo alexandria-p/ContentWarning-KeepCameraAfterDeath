@@ -4,15 +4,6 @@ namespace KeepCameraAfterDeath.Patches;
 
 public class SurfaceNetworkHandlerPatch
 {
-    public static SurfaceNetworkHandlerPatch Instance { get; private set; } = null!;
-
-    
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     internal static void Init()
     {
         /*
@@ -24,8 +15,6 @@ public class SurfaceNetworkHandlerPatch
         // Dev Note: SurfaceNetworkHandler.InitSurface runs after PhotonGameLobbyHandler.ReturnToSurface
         On.SurfaceNetworkHandler.InitSurface += SurfaceNetworkHandler_InitSurface;
     }
-
-   
 
     private static void SurfaceNetworkHandler_InitSurface(On.SurfaceNetworkHandler.orig_InitSurface orig, SurfaceNetworkHandler self)
     {
@@ -55,8 +44,7 @@ public class SurfaceNetworkHandlerPatch
 
         void AddCameraToSurface()
         {
-            // PhotonNetwork.IsMasterClient
-            if (MyceliumNetwork.IsHost) // PhotonNetwork is a static class, so can be called here
+            if (MyceliumNetwork.IsHost)
             {
                 self.m_VideoCameraSpawner.SpawnMe(force: true);
             }
@@ -70,7 +58,7 @@ public class SurfaceNetworkHandlerPatch
             }
 
             UserInterface.ShowMoneyNotification("Cash Received", $"${KeepCameraAfterDeath.Instance.CashRewardForCameraReturn}", MoneyCellUI.MoneyCellType.Revenue);
-            //// PhotonNetwork.IsMasterClient
+
             if (MyceliumNetwork.IsHost)
             {
                 KeepCameraAfterDeath.Logger.LogInfo("Awarding revenue for camera return");
@@ -78,7 +66,6 @@ public class SurfaceNetworkHandlerPatch
             }
         }
 
-        // Dev Note: following the format of HatShop.HatBuyClicked
         void AddMCToPlayers()
         {
             if (KeepCameraAfterDeath.Instance.MetaCoinRewardForCameraReturn <= 0)
@@ -88,38 +75,6 @@ public class SurfaceNetworkHandlerPatch
 
             KeepCameraAfterDeath.Logger.LogInfo("Awarding MC coins for camera return");
             MetaProgressionHandler.AddMetaCoins(KeepCameraAfterDeath.Instance.MetaCoinRewardForCameraReturn);
-
-            //KeepCameraAfterDeath.Logger.LogInfo($"PhotonNetwork.LocalPlayer.ActorNumber {PhotonNetwork.LocalPlayer.ActorNumber}");
-            //view.RPC("RPCM_TryAwardMC", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }
     }
-    
-    /*
-    [PunRPC]
-    public void RPCM_TryAwardMC(int buyerActorNumber)
-    {
-        KeepCameraAfterDeath.Logger.LogInfo("RPCM_TryAwardMC");
-        PhotonNetwork.PlayerList.First((Photon.Realtime.Player o) => o.ActorNumber == buyerActorNumber);
-
-        KeepCameraAfterDeath.Logger.LogInfo("Calling RPCA_AwardMC");
-        view.RPC("RPCA_AwardMC", RpcTarget.All, buyerActorNumber);
-    }
-
-    [PunRPC]
-    public void RPCA_AwardMC(int buyerActorNumber)
-    {
-        KeepCameraAfterDeath.Logger.LogInfo("RPCA_AwardMC");
-
-        if (!PlayerHandler.instance.TryGetPlayerFromOwnerID(buyerActorNumber, out var o))
-        {
-            KeepCameraAfterDeath.Logger.LogError("Player not found to award MC to on camera return");
-            return;
-        }
-        if (Player.localPlayer == o)
-        {
-            KeepCameraAfterDeath.Logger.LogInfo("Awarding MC coins for camera return");
-            MetaProgressionHandler.AddMetaCoins(MetaCoinRewardForCameraReturn);
-        }
-    }
-    */
 }
