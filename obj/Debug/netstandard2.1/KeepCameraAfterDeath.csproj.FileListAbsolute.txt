@@ -1,0 +1,16 @@
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.csproj.AssemblyReference.cache
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.IgnoresAccessChecksTo.cs
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\MyPluginInfo.cs
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.GeneratedMSBuildEditorConfig.editorconfig
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.AssemblyInfoInputs.cache
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.AssemblyInfo.cs
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.csproj.CoreCompileInputs.cache
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCameraAfterDeath.sourcelink.json
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\alexandria-p.KeepCameraAfterDeath.deps.json
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\alexandria-p.KeepCameraAfterDeath.dll
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\MMHOOK_Assembly-CSharp.dll
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\PhotonUnityNetworking.dll
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\Zorro.Core.Runtime.dll
+W:\mods\ContentWarning\KeepCameraAfterDeath\bin\Debug\netstandard2.1\Zorro.Settings.Runtime.dll
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\KeepCame.0A993FBD.Up2Date
+W:\mods\ContentWarning\KeepCameraAfterDeath\obj\Debug\netstandard2.1\alexandria-p.KeepCameraAfterDeath.dll

@@ -2,17 +2,11 @@ using BepInEx;
 using BepInEx.Logging;
 using System.Reflection;
 using MonoMod.RuntimeDetour.HookGen;
+using ContentSettings.API.Attributes;
+using ContentSettings.API.Settings;
 using KeepCameraAfterDeath.Patches;
 
 namespace KeepCameraAfterDeath;
-
-/*
-[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-*/
-
-//[ContentWarningPlugin("alexandria-p.KeepCameraAfterDeath", "1.0.0", false)]
-//[BepInPlugin("alexandria-p.KeepCameraAfterDeath", "KeepCameraAfterDeath", "1.0.0")]
 
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
@@ -20,6 +14,10 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 {
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
+
+    public bool EnableRewardForCameraReturn { get; private set; }
+    public int MetaCoinRewardForCameraReturn { get; private set; }
+    public int CashRewardForCameraReturn { get; private set; }
 
     private void Awake()
     {
@@ -57,13 +55,28 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         Logger.LogDebug("Finished Unhooking!");
     }
 
+    public void SetEnableRewardForCameraReturn(bool rewardEnabled)
+    {
+        EnableRewardForCameraReturn = rewardEnabled;
+    }
+
+    public void SetMetaCoinRewardForCameraReturn(int mcReward)
+    {
+        MetaCoinRewardForCameraReturn = mcReward;
+    }
+
+    public void SetCashRewardForCameraReturn(int cashReward)
+    {
+        CashRewardForCameraReturn = cashReward;
+    }
+
     [SettingRegister("KeepCameraAfterDeath")]
     public class EnableRewardForCameraReturnSetting : BoolSetting, ICustomSetting
     {
         public override void ApplyValue()
         {
-            Main.Logger.LogInfo($"MC Reward for camera return: {Value}");
-            SurfaceNetworkHandlerPatch/*.Instance*/.SetEnableRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Logger.LogInfo($"MC Reward for camera return: {Value}");
+            KeepCameraAfterDeath.Instance.SetEnableRewardForCameraReturn(Value);
         }
 
         public string GetDisplayName() => "Award MC as an incentive for bringing the camera back to the surface (overrides MC value below)";
@@ -76,8 +89,8 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         public override void ApplyValue()
         {
-            Main.Logger.LogInfo($"Meta Coin (MC) Reward for camera return: {Value}");
-            SurfaceNetworkHandlerPatch/*.Instance*/.SetMetaCoinRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Logger.LogInfo($"Meta Coin (MC) Reward for camera return: {Value}");
+            KeepCameraAfterDeath.Instance.SetMetaCoinRewardForCameraReturn(Value);
         }
 
         public string GetDisplayName() => "Integer Feature";
@@ -92,8 +105,8 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         public override void ApplyValue()
         {
-            Main.Logger.LogInfo($"Cash Reward for camera return: {Value}");
-            SurfaceNetworkHandlerPatch/*.Instance*/.SetCashRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Logger.LogInfo($"Cash Reward for camera return: {Value}");
+            KeepCameraAfterDeath.Instance.SetCashRewardForCameraReturn(Value);
         }
 
         public string GetDisplayName() => "Integer Feature";
