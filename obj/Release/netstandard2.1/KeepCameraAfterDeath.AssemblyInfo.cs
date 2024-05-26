@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("alexandria-p.KeepCameraAfterDeath")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5da7b9afc7ee446bb85a948a5c9ba6904044a0b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f682e4328854bfbc2d8d45c004ebc88f053b2da5")]
 [assembly: System.Reflection.AssemblyProductAttribute("KeepCameraAfterDeath")]
 [assembly: System.Reflection.AssemblyTitleAttribute("alexandria-p.KeepCameraAfterDeath")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
