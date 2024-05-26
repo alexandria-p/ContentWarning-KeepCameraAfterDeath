@@ -19,6 +19,9 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public int MetaCoinRewardForCameraReturn { get; private set; }
     public int CashRewardForCameraReturn { get; private set; }
 
+    public ItemInstanceData? PreservedCameraInstanceData { get; private set; } = null;
+    public bool SuccessfullyBroughtCameraHome { get; private set; } = false;
+
     private void Awake()
     {
         Logger = base.Logger;
@@ -34,6 +37,8 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         Logger.LogDebug("Hooking...");
 
         SurfaceNetworkHandlerPatch.Init();
+        VideoCameraPatch.Init();
+        PhotonGameLobbyHandlerPatch.Init();
 
         Logger.LogDebug("Finished Hooking!");
     }
@@ -60,6 +65,32 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public void SetCashRewardForCameraReturn(int cashReward)
     {
         CashRewardForCameraReturn = cashReward;
+    }
+
+    public void SetPreservedCameraInstanceData(ItemInstanceData data)
+    {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: PRESERVE CAMERA DATA");
+        data.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry t);
+        KeepCameraAfterDeath.Logger.LogInfo(t != null ? t.videoID : "NONE");
+        PreservedCameraInstanceData = data;
+    }
+
+    public void ClearPreservedCameraInstanceData()
+    {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: CLEAR CAMERA DATA");
+        PreservedCameraInstanceData = null;
+    }
+
+    public void SetSuccessfullyBroughtCameraHome(bool success)
+    {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: SET CAMERA BROUGHT HOME: "+ success);
+        SuccessfullyBroughtCameraHome = success;
+    }
+
+    public void ClearSuccessfullyBroughtCameraHome()
+    {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: CLEAR IF CAMERA BROUGHT HOME");
+        SuccessfullyBroughtCameraHome = false;
     }
 
     [SettingRegister("KeepCameraAfterDeath Mod Settings")]
