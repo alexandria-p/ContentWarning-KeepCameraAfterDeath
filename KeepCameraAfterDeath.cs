@@ -22,6 +22,8 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public ItemInstanceData? PreservedCameraInstanceData { get; private set; } = null;
     public bool SuccessfullyBroughtCameraHome { get; private set; } = false;
 
+    public bool SearchingForUndergroundPersistentObjects = false;
+
     private void Awake()
     {
         Logger = base.Logger;
@@ -39,6 +41,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         SurfaceNetworkHandlerPatch.Init();
         VideoCameraPatch.Init();
         PhotonGameLobbyHandlerPatch.Init();
+        PersistentObjectsHolderPatch.Init();
 
         Logger.LogDebug("Finished Hooking!");
     }
@@ -71,7 +74,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: PRESERVE CAMERA DATA");
         data.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry t);
-        KeepCameraAfterDeath.Logger.LogInfo(t != null ? t.videoID : "NONE");
+        KeepCameraAfterDeath.Logger.LogInfo("Video ID: " + t != null ? t.videoID : "NONE");
         PreservedCameraInstanceData = data;
     }
 

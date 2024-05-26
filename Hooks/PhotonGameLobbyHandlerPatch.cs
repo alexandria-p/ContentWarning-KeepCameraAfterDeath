@@ -5,6 +5,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+
+using System.CodeDom.Compiler;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using BepInEx;
+using Microsoft.CodeAnalysis;
+using UnityEngine;
+using UnityEngine.UI;
+
 namespace KeepCameraAfterDeath.Patches;
 
 public class PhotonGameLobbyHandlerPatch
@@ -25,45 +41,12 @@ public class PhotonGameLobbyHandlerPatch
     {
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: on return to surface");
 
-        var currentRecording = RecordingsHandler.GetCamerasCurrentRecording();
+        //KeepCameraAfterDeath.Instance.ReturningToSurface = true;
 
-        if (currentRecording != null)
-        {
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: found recording");
-            var currentRecordingKeys = currentRecording.GetKeys();
-            if (currentRecordingKeys != null)
-            {
-                KeepCameraAfterDeath.Logger.LogInfo("ALEX: has " + currentRecordingKeys.Count() + "keys");
-
-                // search keys for a camera guid
-                foreach (Guid key in currentRecordingKeys)
-                {
-                    if (!ItemInstanceDataHandler.TryGetInstanceData(key, out var o))
-                    {
-                        continue;
-                    }
-
-                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: found instance data");
-
-                    // see if instance data belongs to a camera
-                    if (CameraHandler.TryGetCamera(key, out VideoCamera videoCamera)) // o.m_guid
-                    {
-                        KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
-                        // get VideoInfoEntry from Camera Instance Data
-                        bool cameraIsNotEmpty = o.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry t);
-
-                        if (cameraIsNotEmpty)
-                        {
-                            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera is not empty");
-                            KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceData(o);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
 
         orig(self, playersInside);
+
+        //KeepCameraAfterDeath.Instance.ReturningToSurface = false;
     }
 
 }
