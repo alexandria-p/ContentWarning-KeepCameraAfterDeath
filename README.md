@@ -1,11 +1,12 @@
 # Keep Camera After Death - Content Warning mod
 
+You no longer need to fear your crew's ineptitude!
+
 In the event of:
 - total crew death, or
 - a major fumble where your cameraman left the camera behind before returning to the diving bell.
 
-You no longer need to fear your crew's ineptitude! This mod respawns the camera at its regular spawn position on the surface when the crew returns in the evening. This means you can still export your footage and upload it to spooktube to watch together on the sofa.
-
+This mod respawns the camera at its regular spawn position on the surface when the crew returns in the evening. This means you can still export your footage and upload it to spooktube to watch together on the sofa.
 
 As a bonus, you can optionally incentivise your players to stay alive and keep their camera with Meta Coin or Cash rewards that are configurable in the game settings.
 
