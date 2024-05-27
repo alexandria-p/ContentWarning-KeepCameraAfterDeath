@@ -52,7 +52,7 @@ Any camera that this mod "saves" will no longer spawn underground on future runs
 
 # Does this mod work if my crew has multiple cameras?
 
-Yes - with a caveat.
+Yes...with a caveat.
 
 Remember how this mod searches for & preserves the footage from dropped cameras when a run ends?
 
