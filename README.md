@@ -12,9 +12,9 @@ As a bonus, you can optionally incentivise your players to stay alive and bring 
 
 The host decides whether or not rewards should be distributed for returning with the camera. If they choose to enable rewards, they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
-# Author Note
+# Contact Us
 
-If you found this mod on any site except for Thunderstore or r2 Modman, then I cannot guarantee the safety of the file you have downloaded. 
+**If you found this mod on any site except for *Thunderstore* or *r2 Modman*, then I cannot guarantee the safety of the file you have downloaded.** 
 
 Please report this back to me on my GitHub https://github.com/alexandria-p or my Twitter account https://twitter.com/HumbleKraken.
 
@@ -22,9 +22,9 @@ Please report this back to me on my GitHub https://github.com/alexandria-p or my
 
 **All crew members must have this mod installed, and follow these steps**
   
-* Install the r2 Modman mod manager via Thunderstore
-* Add this mod to r2 Modman and make sure it is enabled
-* Run Content Warning via r2 Modman. You may need to already have Steam running in the background.
+* Install the *r2 Modman* mod manager via *Thunderstore*
+* Add this mod to *r2 Modman* and make sure it is enabled
+* Run Content Warning via *r2 Modman*. You may need to already have Steam running in the background.
 
 # How does it work?
 
