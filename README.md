@@ -68,6 +68,18 @@ Maybe in the future this mod will save all cameras dropped in a run underground,
 
 Right now it is easiest for me to only save a single camera's worth of footage, because I am piggy-backing how the game spawns that new (single) camera on the porch at the start of a new day.
 
+# Can I copy this mod's code? Can I contribute to this project?
+
+*You cannot wholesale copy this mod with the intent of passing it off as your own.*
+
+Ideally, you should be able to raise an issue or pull request on this project, so that any new functionality can stay in a single mod & should be toggleable by users in the game settings. If this gives you trouble, please see the "Contact Us" section of this README for details on how to get in touch.
+
+If you'd like to fork the project to add or change functionality, please message me first at my GitHub or Twitter and make sure you link back to my GitHub repository in your mod description.
+
+https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath
+
+I wholeheartedly encourage you to look at the mod files on my GitHub to learn more about how it was made 💝 I have learnt so much by reading the source code of other mods.
+
 # Dependencies
 
 - Hamunii-AutoHookGenPatcher-1.0.3
