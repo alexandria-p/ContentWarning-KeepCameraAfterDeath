@@ -22,12 +22,15 @@ Feel free to tweet at me too if you enjoyed using this mod - especially if you a
 
 # Installation steps
 
-**All crew members must have this mod installed, and follow these steps**
-  
+### All crew members must have this mod installed, and follow these steps
+
+**If you've never installed mods for Content Warning, do this first:**
 * Install the *r2 Modman* mod manager via *Thunderstore* (click "Manual Download"): https://thunderstore.io/c/content-warning/p/ebkr/r2modman/
 * Run *r2 Modman*
 * Select *Content Warning* as your game in *r2 Modman*
 * Search for and install the *BepInEx* mod (this can be done from inside *r2 Modman*): https://thunderstore.io/c/content-warning/p/BepInEx/BepInExPack/
+
+**Skip to here if you already have the r2 Modman mod manager set up and installed.**
 * Add this mod (KeepCameraAfterDeath) to *r2 Modman* and make sure it is enabled
 * Run Content Warning via *r2 Modman*. You may need to already have Steam running in the background.
 
