@@ -11,6 +11,7 @@ public class VideoCameraPatch
         On.VideoCamera.ConfigItem += VideoCamera_ConfigItem;
     }
 
+    // runs when cameras are picked up & dropped
     private static void VideoCamera_ConfigItem(On.VideoCamera.orig_ConfigItem orig, VideoCamera self, ItemInstanceData data, PhotonView playerView)
     {
         bool isEvening = TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening;
@@ -20,7 +21,7 @@ public class VideoCameraPatch
 
         var preservedVideoDataExists = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null;
 
-        // Restore preserved footage if camera was lost Underground
+        // if a camera was lost underground, and this camera is empty
         if (isEvening && noValidVideoDataOnCamera && preservedVideoDataExists)
         {
             var foundPreservedVIE = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry vie);
@@ -28,6 +29,7 @@ public class VideoCameraPatch
 
             if (validPreservedDataExists)
             {
+                // Restore preserved footage onto this empty camera
                 data.AddDataEntry(vie);
 
                 // once restored, clear preserved data as we no longer need it
