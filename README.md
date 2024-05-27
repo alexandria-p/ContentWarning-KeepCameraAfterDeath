@@ -11,9 +11,9 @@ As a bonus, you can optionally incentivise your players to stay alive and keep t
 
 # Dependencies
 
-Hamunii-AutoHookGenPatcher-1.0.3
-CommanderCat101-ContentSettings-1.2.2
-RugbugRedfern-MyceliumNetworking-1.0.14
+- Hamunii-AutoHookGenPatcher-1.0.3
+- CommanderCat101-ContentSettings-1.2.2
+- RugbugRedfern-MyceliumNetworking-1.0.14
 
 # References
 
