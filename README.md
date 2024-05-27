@@ -12,11 +12,13 @@ As a bonus, you can optionally incentivise your players to stay alive and bring 
 
 The host decides whether or not rewards should be distributed for returning with the camera. If they choose to enable rewards, they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
-# Contact Us
+### Contact Us
 
-**If you found this mod on any site except for *Thunderstore* or *r2 Modman*, then I cannot guarantee the safety of the file you have downloaded.** 
+🚨 If you found this mod on any site except for *Thunderstore* or *r2 Modman*, then I cannot guarantee the safety of the file you have downloaded! 🚨
 
 Please report this back to me on my GitHub https://github.com/alexandria-p or my Twitter account https://twitter.com/HumbleKraken.
+
+Feel free to tweet at me too if you enjoyed using this mod - especially if you attach the footage you were able to save!
 
 # Installation steps
 
@@ -25,6 +27,12 @@ Please report this back to me on my GitHub https://github.com/alexandria-p or my
 * Install the *r2 Modman* mod manager via *Thunderstore*
 * Add this mod to *r2 Modman* and make sure it is enabled
 * Run Content Warning via *r2 Modman*. You may need to already have Steam running in the background.
+
+# Why do I need this mod
+
+Pssst - even if you don't use this mod, your video files are still saved if you lost your camera underground. Press `F3` to view your videoclips! This will work until you leave the game lobby and can be done in the vanilla (unmodded) game.
+
+The KeepCameraAfterDeath mod just allows players to access that footage in-game on a new videocamera, so they can export it to CD and enjoy watching it together on the sofa.
 
 # How does it work?
 
