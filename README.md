@@ -10,7 +10,7 @@ This mod respawns the camera at its regular spawn position on the surface when t
 
 As a bonus, you can optionally incentivise your players to stay alive and bring their camera home with rewards that are configurable in the game settings.
 
-The host decides whether or not rewards should be distributed for returning with the camera, and if so they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
+The host decides whether or not rewards should be distributed for returning with the camera. If they choose to enable rewards, they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
 # Author Note
 
