@@ -22,9 +22,9 @@ public class PersistentObjectsHolderPatch
         // Dev note: right now we only recover the FIRST camera we find...if folks are using mods to have multiple cameras in circulation, the rest of them will stay dropped & persist in the world.
         // it will not attempt to preserve footage of any camera it finds beyond the first one.
 
-        bool cameraDataAlreadyExists = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null;
+        bool preservedCameraDataAlreadyExists = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null;
 
-        if (p == null || cameraDataAlreadyExists)
+        if (p == null || preservedCameraDataAlreadyExists)
         {
             orig(self, p, itemToUse);
             return;
@@ -56,7 +56,7 @@ public class PersistentObjectsHolderPatch
             }
         }
 
-        // falls through to here if we are not underground or if we didn't find camera to save that was dropped this round
+        // falls through to here if we are not underground or if we didn't find any camera to save this round
         orig(self, p, itemToUse);
     }
 
