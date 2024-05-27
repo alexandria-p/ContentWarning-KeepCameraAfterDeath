@@ -9,6 +9,8 @@ You no longer need to fear your crew's ineptitude! This mod respawns the camera 
 
 As a bonus, you can optionally incentivise your players to stay alive and keep their camera with Meta Coin or Cash rewards that are configurable in the game settings.
 
+Note that the game uses the host's settings to distribute rewards for the round.
+
 # How does it work?
 
 Here is a breakdown of what happens under the hood.
