@@ -1,4 +1,4 @@
-# Keep Camera After Death - Content Warning mod
+# Keep Camera After Death - mod for Content Warning
 
 You no longer need to fear your crew's ineptitude!
 
@@ -11,6 +11,20 @@ This mod respawns the camera at its regular spawn position on the surface when t
 As a bonus, you can optionally incentivise your players to stay alive and bring their camera home with rewards that are configurable in the game settings.
 
 The host decides whether or not rewards should be distributed for returning with the camera, and if so they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
+
+# Author Note
+
+If you found this mod on any site except for Thunderstore or r2 Modman, then I cannot guarantee the safety of the file you have downloaded. 
+
+Please report this back to me on my GitHub https://github.com/alexandria-p or my Twitter account https://twitter.com/HumbleKraken.
+
+# Installation steps
+
+**All crew members must have this mod installed, and follow these steps**
+  
+* Install the r2 Modman mod manager via Thunderstore
+* Add this mod to r2 Modman and make sure it is enabled
+* Run Content Warning via r2 Modman. You may need to already have Steam running in the background.
 
 # How does it work?
 
