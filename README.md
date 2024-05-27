@@ -1,4 +1,4 @@
-# Keep Camera After Death - mod for Content Warning
+# Keep Camera After Death - Mod for Content Warning
 
 You no longer need to fear your crew's ineptitude!
 
@@ -72,7 +72,7 @@ Right now it is easiest for me to only save a single camera's worth of footage, 
 
 *You cannot wholesale copy this mod with the intent of passing it off as your own.*
 
-Ideally, you should be able to raise an issue or pull request on this project, so that any new functionality can stay in a single mod & should be toggleable by users in the game settings. If this gives you trouble, please see the "Contact Us" section of this README for details on how to get in touch.
+Ideally, you should be able to raise an issue or pull request on this project, so that any new functionality can stay in a single mod & be toggleable by users in the game settings. If this gives you trouble, please see the "Contact Us" section of this README for details on how to get in touch.
 
 If you'd like to fork the project to add or change functionality, please message me first at my GitHub or Twitter and make sure you link back to my GitHub repository in your mod description.
 
