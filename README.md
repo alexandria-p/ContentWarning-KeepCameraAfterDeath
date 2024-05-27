@@ -8,9 +8,9 @@ In the event of:
 
 This mod respawns the camera at its regular spawn position on the surface when the crew returns in the evening. This means you can still export your footage and upload it to spooktube to watch together on the sofa.
 
-As a bonus, you can optionally incentivise your players to stay alive and keep their camera with Meta Coin or Cash rewards that are configurable in the game settings.
+As a bonus, you can optionally incentivise your players to stay alive and bring their camera home with rewards that are configurable in the game settings.
 
-Note that the game uses the host's settings to distribute rewards for the round.
+The host can decide whether or not rewards should be distributed for returning with the camera, and if so they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
 # How does it work?
 
