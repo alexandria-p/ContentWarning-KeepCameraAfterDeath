@@ -21,8 +21,6 @@ public class SurfaceNetworkHandlerPatch
             KeepCameraAfterDeath.Logger.LogInfo("ALEX: is evening");
             var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
 
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: is camera here?: "+ successfullyBroughtCameraHome);
-
             if (MyceliumNetwork.IsHost)
             {
                 if (successfullyBroughtCameraHome)
