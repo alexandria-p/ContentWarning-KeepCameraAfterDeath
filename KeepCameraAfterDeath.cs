@@ -93,9 +93,6 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
     public void SetPendingRewardForAllPlayers()
     {
-        SetPendingRewardForCameraReturn(PlayerSettingCashReward, PlayerSettingMetaCoinReward);
-
-        
         if (!MyceliumNetwork.IsHost)
         {
             return;
