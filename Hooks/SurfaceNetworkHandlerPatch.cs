@@ -7,13 +7,19 @@ public class SurfaceNetworkHandlerPatch
 {
     internal static void Init()
     {
-        // Dev Note: SurfaceNetworkHandler.InitSurface runs after PhotonGameLobbyHandler.ReturnToSurface
         On.SurfaceNetworkHandler.InitSurface += SurfaceNetworkHandler_InitSurface;
-        On.SurfaceNetworkHandler.OnSlept += SurfaceNetworkHandler_OnSlept;
+        On.SurfaceNetworkHandler.NextDay += SurfaceNetworkHandler_NextDay;
     }
 
     private static void SurfaceNetworkHandler_InitSurface(On.SurfaceNetworkHandler.orig_InitSurface orig, SurfaceNetworkHandler self)
     {
+        // Clear data when entering new lobby
+        if (SurfaceNetworkHandler.RoomStats == null)
+        {
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: new lobby");
+            KeepCameraAfterDeath.Instance.ClearData();
+        }
+
         // When returning from spelunking,
         // Set if camera was brought home
         if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
@@ -32,26 +38,34 @@ public class SurfaceNetworkHandlerPatch
                         KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
                     }
                 }
-                else
+
+                if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null)
                 {
                     KeepCameraAfterDeath.Logger.LogInfo("ALEX: respawn camera");
+                    /*
+                    // destroy any existing cameras
+                    VideoCamera[] array = UnityEngine.Object.FindObjectsOfType<VideoCamera>();
+                    for (int i = 0; i < array.Length; i++)
+                    {
+                        PhotonView component = array[i].transform.parent.GetComponent<PhotonView>();
+                        if (component != null)
+                        {
+                            PhotonNetwork.Destroy(component);
+                        }
+                    }
+                    */
                     // add camera to the surface
                     self.m_VideoCameraSpawner.SpawnMe(force: true);
                 }
             }
         }
-
         orig(self);
     }
 
-    private static void SurfaceNetworkHandler_OnSlept(On.SurfaceNetworkHandler.orig_OnSlept orig, SurfaceNetworkHandler self)
+    // called by OnSlept, but also when quota fails
+    private static void SurfaceNetworkHandler_NextDay(On.SurfaceNetworkHandler.orig_NextDay orig, SurfaceNetworkHandler self)
     {
-        // Safety checks: these should already have been reset as soon as they were used .. but lets clear them at the end of every day just to be sure.
-        // Clear any camera film that was preserved from the lost world on the previous day
-        // Clear pending rewards for camera return
-        KeepCameraAfterDeath.Instance.ClearPreservedCameraInstanceData();
-        KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
-
+        KeepCameraAfterDeath.Instance.Command_ResetDataforDay();
         orig(self);
     }
 }

@@ -101,12 +101,11 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         Logger.LogInfo("ALEX: try set rewards for players using RPC");
 
         // send out host's setting for rewards to all players
-        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(SetPendingRewardForCameraReturn), ReliableType.Reliable, PlayerSettingCashReward, PlayerSettingMetaCoinReward);
-    
-        }
+        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_SetPendingRewardForCameraReturn), ReliableType.Reliable, PlayerSettingCashReward, PlayerSettingMetaCoinReward);
+    }
 
     [CustomRPC]
-    public void SetPendingRewardForCameraReturn(int cash, int mc)
+    public void RPC_SetPendingRewardForCameraReturn(int cash, int mc)
     {
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: set reward for camera return: $" + cash + " and " + mc + "MC");
         PendingRewardForCameraReturn = (cash, mc);
@@ -116,6 +115,35 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: clear pending reward");
         PendingRewardForCameraReturn = null;
+    }
+
+    public void Command_ResetDataforDay()
+    {
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        Logger.LogInfo("ALEX: try clear day's data for players using RPC");
+
+        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_ResetDataforDay), ReliableType.Reliable);
+    }
+
+    [CustomRPC]
+    public void RPC_ResetDataforDay()
+    {
+        // Clear any camera film that was preserved from the lost world on the previous day
+        // Clear pending rewards for camera return
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: commanded by host to clear today's data");
+        KeepCameraAfterDeath.Instance.ClearData();
+    }
+
+    public void ClearData()
+    {
+        // Clear any camera film that was preserved from the lost world on the previous day
+        // Clear pending rewards for camera return
+        KeepCameraAfterDeath.Instance.ClearPreservedCameraInstanceData();
+        KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
     }
 
     [SettingRegister("KeepCameraAfterDeath Mod Settings")]
