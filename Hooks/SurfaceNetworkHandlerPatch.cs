@@ -22,44 +22,47 @@ public class SurfaceNetworkHandlerPatch
 
         // When returning from spelunking,
         // Set if camera was brought home
-        if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
+        if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening && MyceliumNetwork.IsHost)
         {
             KeepCameraAfterDeath.Logger.LogInfo("ALEX: is evening");
-            var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
-
-            if (MyceliumNetwork.IsHost)
+            
+            if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null)
             {
-                if (successfullyBroughtCameraHome)
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: respawn camera");
+                /*
+                // destroy any existing cameras
+                VideoCamera[] array = UnityEngine.Object.FindObjectsOfType<VideoCamera>();
+                for (int i = 0; i < array.Length; i++)
                 {
-                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: brought camera home");
-                    // use host settings to set rewards
-                    if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
+                    PhotonView component = array[i].transform.parent.GetComponent<PhotonView>();
+                    if (component != null)
                     {
-                        KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
+                        PhotonNetwork.Destroy(component);
                     }
                 }
-
-                if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null)
-                {
-                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: respawn camera");
-                    /*
-                    // destroy any existing cameras
-                    VideoCamera[] array = UnityEngine.Object.FindObjectsOfType<VideoCamera>();
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        PhotonView component = array[i].transform.parent.GetComponent<PhotonView>();
-                        if (component != null)
-                        {
-                            PhotonNetwork.Destroy(component);
-                        }
-                    }
-                    */
-                    // add camera to the surface
-                    self.m_VideoCameraSpawner.SpawnMe(force: true);
-                }
+                */
+                // add camera to the surface
+                self.m_VideoCameraSpawner.SpawnMe(force: true);
             }
         }
         orig(self);
+
+        // wait until after initsurface has run to set if reward should be made, as we need to wait for surface pickups to spawn
+
+        if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening && MyceliumNetwork.IsHost)
+        {
+            var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
+            
+            if (successfullyBroughtCameraHome)
+            {
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: brought camera home");
+                // use host settings to set rewards
+                if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
+                {
+                    KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
+                }
+            }
+        }
     }
 
     // called by OnSlept, but also when quota fails

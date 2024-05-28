@@ -24,8 +24,6 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public ItemInstanceData? PreservedCameraInstanceData { get; private set; } = null;
     public (int cash, int mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
-    public bool SearchingForUndergroundPersistentObjects = false;
-
     private void Awake()
     {
         Logger = base.Logger;
