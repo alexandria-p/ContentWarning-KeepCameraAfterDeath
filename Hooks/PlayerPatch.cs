@@ -19,17 +19,21 @@ public class PlayerPatch
 
         if (self.IsLocal)
         {
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: local player spawn");
-            // if we respawn after spelunking underground,
-            // check if there is a pending reward for our safe return of the camera
-            if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening
-                && KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null)
+            // skip this if you're spawning after quota wasn't met (and roomStats is set to Null)
+            if (SurfaceNetworkHandler.RoomStats != null)
             {
-                KeepCameraAfterDeath.Logger.LogInfo("ALEX: try add reward");
-                AddCashToRoom();
-                AddMCToPlayers();
-                KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
-            }
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: local player spawn");
+                // if we respawn after spelunking underground,
+                // check if there is a pending reward for our safe return of the camera
+                if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening
+                    && KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null)
+                {
+                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: try add reward");
+                    AddCashToRoom();
+                    AddMCToPlayers();
+                    KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
+                }
+            }            
         }
 
         return returnValue;
