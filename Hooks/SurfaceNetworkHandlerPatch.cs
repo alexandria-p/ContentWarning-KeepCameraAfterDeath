@@ -18,21 +18,25 @@ public class SurfaceNetworkHandlerPatch
         // Set if camera was brought home
         if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
         {
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: is evening");
             var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
+
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: is camera here?: "+ successfullyBroughtCameraHome);
 
             if (MyceliumNetwork.IsHost)
             {
                 if (successfullyBroughtCameraHome)
                 {
+                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: brought camera home");
                     // use host settings to set rewards
                     if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
                     {
-                        // todo - RPC
-                        KeepCameraAfterDeath.Instance.SetPendingRewardForCameraReturn();
+                        KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
                     }
                 }
                 else
                 {
+                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: respawn camera");
                     // add camera to the surface
                     self.m_VideoCameraSpawner.SpawnMe(force: true);
                 }

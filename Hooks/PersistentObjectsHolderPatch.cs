@@ -13,6 +13,7 @@ public class PersistentObjectsHolderPatch
     private static void PersistentObjectsHolder_FindPersistantObjects(On.PersistentObjectsHolder.orig_FindPersistantObjects orig, PersistentObjectsHolder self)
     {
         KeepCameraAfterDeath.Instance.SearchingForUndergroundPersistentObjects = true;
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: search for cameras underground");
         orig(self);
         KeepCameraAfterDeath.Instance.SearchingForUndergroundPersistentObjects = false;
     }
@@ -26,6 +27,7 @@ public class PersistentObjectsHolderPatch
 
         if (p == null || preservedCameraDataAlreadyExists)
         {
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera footage already found");
             orig(self, p, itemToUse);
             return;
         }
@@ -45,6 +47,7 @@ public class PersistentObjectsHolderPatch
                     // Then if it is a camera, intercept it!
                     if (CameraHandler.TryGetCamera(o.m_guid, out var videoCamera))
                     {
+                        KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
                         KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceData(o);
 
                         return; // early out,
