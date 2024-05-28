@@ -1,3 +1,6 @@
+using Microsoft.Win32.SafeHandles;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace KeepCameraAfterDeath.Patches;
@@ -6,61 +9,65 @@ public class PersistentObjectsHolderPatch
 {
     internal static void Init()
     {
-        On.PersistentObjectsHolder.AddPersistentObject_Pickup_Item += PersistentObjectsHolder_AddPersistentObject_Pickup_Item;
         On.PersistentObjectsHolder.FindPersistantObjects += PersistentObjectsHolder_FindPersistantObjects;
     }
 
     private static void PersistentObjectsHolder_FindPersistantObjects(On.PersistentObjectsHolder.orig_FindPersistantObjects orig, PersistentObjectsHolder self)
     {
-        KeepCameraAfterDeath.Instance.SearchingForUndergroundPersistentObjects = true;
+        var existingCamerasUnderground = FindVideoCamerasInSet(self.m_PersistentObjects);
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: search for cameras underground");
         orig(self);
-        KeepCameraAfterDeath.Instance.SearchingForUndergroundPersistentObjects = false;
+
+        var numObjects = self.m_PersistentObjects.Count;
+
+
+        for (int i = numObjects - 1; i >= 0; i--)
+        {
+            PersistentObjectInfo item = self.m_PersistentObjects[i];
+            var objectInstanceData = item.InstanceData;
+            var objectGuid = objectInstanceData.m_guid;
+
+            // Then if it is a dropped camera, intercept it!
+            if (CameraHandler.TryGetCamera(objectGuid, out var videoCamera))
+            {
+                // if it was already underground, skip
+                if (existingCamerasUnderground.Contains(videoCamera))
+                {
+                    continue;
+                }
+
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
+                KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceData(objectInstanceData);
+
+                // We don't want to leave a clone of the camera underground when we are gonna make a new one on the surface.
+                // so we want to remove this camera from persistent objects.
+                if (self.m_PersistentObjectDic.ContainsKey(item.Pickup))
+                {
+                    self.m_PersistentObjectDic.Remove(item.Pickup);
+                }
+
+                self.m_PersistentObjects.Remove(item);
+
+                return; // break here, don't look for more cameras.
+            }
+        }
     }
 
-    private static void PersistentObjectsHolder_AddPersistentObject_Pickup_Item(On.PersistentObjectsHolder.orig_AddPersistentObject_Pickup_Item orig, PersistentObjectsHolder self, Pickup p, Item itemToUse)
+    private static List<VideoCamera> FindVideoCamerasInSet(List<PersistentObjectInfo> persistantObjects)
     {
-        // Dev note: right now we only recover the FIRST camera we find...if folks are using mods to have multiple cameras in circulation, the rest of them will stay dropped & persist in the world.
-        // it will not attempt to preserve footage of any camera it finds beyond the first one.
+        var list = new List<VideoCamera>();
 
-        bool preservedCameraDataAlreadyExists = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null;
-
-        if (p == null || preservedCameraDataAlreadyExists)
+        foreach (var item in persistantObjects)
         {
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera footage already found");
-            orig(self, p, itemToUse);
-            return;
-        }
+            var objectInstanceData = item.InstanceData;
+            var objectGuid = objectInstanceData.m_guid;
 
-        // only intercept adding persistent objects if we are doing it underground (we're not interested in persistent objects on the surface)
-        if (KeepCameraAfterDeath.Instance.SearchingForUndergroundPersistentObjects)
-        {
-            ItemInstance componentInChildren = p.GetComponentInChildren<ItemInstance>();
-            if (componentInChildren.m_guid.IsSome && ItemInstanceDataHandler.TryGetInstanceData(componentInChildren.m_guid.Value, out var o))
+            if (CameraHandler.TryGetCamera(objectGuid, out var videoCamera))
             {
-                Transform transform = p.Rigidbody.transform;
-                PersistentObjectInfo persistentObjectInfo = new PersistentObjectInfo(itemToUse, transform.position, transform.rotation, o, p);
-
-                // if this is a new persistent object we are trying to add...(isn't already in the list)
-                if (!self.m_PersistentObjects.Contains(persistentObjectInfo))
-                {
-                    // Then if it is a camera, intercept it!
-                    if (CameraHandler.TryGetCamera(o.m_guid, out var videoCamera))
-                    {
-                        KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
-                        KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceData(o);
-
-                        return; // early out,
-                        // We don't want to leave a clone of the camera underground when we are gonna make a new one on the surface.
-                        // so we don't want to let the rest of the function play out and add this camera to persistent objects.
-                    }
-
-                }
+                list.Add(videoCamera);
             }
         }
 
-        // falls through to here if we are not underground or if we didn't find any camera to save this round
-        orig(self, p, itemToUse);
+        return list;
     }
-
 }
