@@ -24,6 +24,7 @@ public class VideoCameraPatch
         // if a camera was lost underground, and this camera is empty
         if (isEvening && noValidVideoDataOnCamera && preservedVideoDataExists)
         {
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera interaction - empty camera");
             var foundPreservedVIE = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData!.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry vie);
             var validPreservedDataExists = foundPreservedVIE && vie.videoID.id != Guid.Empty;
 
@@ -32,6 +33,8 @@ public class VideoCameraPatch
                 KeepCameraAfterDeath.Logger.LogInfo("ALEX: restore camera footage");
                 // Restore preserved footage onto this empty camera
                 data.AddDataEntry(vie);
+
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: SET CAMERA DATA video ID: " + vie.videoID.id);
 
                 // once restored, clear preserved data as we no longer need it
                 KeepCameraAfterDeath.Instance.ClearPreservedCameraInstanceData();

@@ -13,7 +13,7 @@ namespace KeepCameraAfterDeath;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class KeepCameraAfterDeath : BaseUnityPlugin
 {
-    const uint myceliumNetworkModId = 3051952344; // meaningless, as long as it is the same between all the clients
+    const uint myceliumNetworkModId = 61812;//3051952344; // meaningless, as long as it is the same between all the clients
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
@@ -35,15 +35,20 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
         Logger.LogInfo($"{"alexandria-p.KeepCameraAfterDeath"} v{"1.0.0"} has loaded!");
 
-        //MyceliumNetwork.RegisterNetworkObject(this, myceliumNetworkModId);
+    }
 
-        Logger.LogInfo($"ALEX: mycelium registered");
+    private void Start()
+    {
+        MyceliumNetwork.RegisterNetworkObject(Instance, myceliumNetworkModId);
 
+        Logger.LogInfo($"ALEX: mycelium network object registered");
     }
 
     void OnDestroy()
     {
-        //MyceliumNetwork.DeregisterNetworkObject(this, myceliumNetworkModId);
+        MyceliumNetwork.DeregisterNetworkObject(Instance, myceliumNetworkModId);
+
+        Logger.LogInfo($"ALEX: mycelium network object destroyed");
     }
 
     internal static void HookAll()
@@ -90,20 +95,20 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     {
         SetPendingRewardForCameraReturn(PlayerSettingCashReward, PlayerSettingMetaCoinReward);
 
-        /*
+        
         if (!MyceliumNetwork.IsHost)
         {
             return;
         }
 
-        KeepCameraAfterDeath.Logger.LogInfo("ALEX: try set rewards for players using RPC");
+        Logger.LogInfo("ALEX: try set rewards for players using RPC");
 
         // send out host's setting for rewards to all players
         MyceliumNetwork.RPC(myceliumNetworkModId, nameof(SetPendingRewardForCameraReturn), ReliableType.Reliable, PlayerSettingCashReward, PlayerSettingMetaCoinReward);
-    */
+    
         }
 
-    //[CustomRPC]
+    [CustomRPC]
     public void SetPendingRewardForCameraReturn(int cash, int mc)
     {
         KeepCameraAfterDeath.Logger.LogInfo("ALEX: set reward for camera return: $" + cash + " and " + mc + "MC");
