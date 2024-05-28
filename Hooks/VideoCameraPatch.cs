@@ -29,6 +29,7 @@ public class VideoCameraPatch
 
             if (validPreservedDataExists)
             {
+                KeepCameraAfterDeath.Logger.LogInfo("ALEX: restore camera footage");
                 // Restore preserved footage onto this empty camera
                 data.AddDataEntry(vie);
 

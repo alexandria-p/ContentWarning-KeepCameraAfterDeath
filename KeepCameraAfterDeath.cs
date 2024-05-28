@@ -5,6 +5,7 @@ using MonoMod.RuntimeDetour.HookGen;
 using ContentSettings.API.Attributes;
 using ContentSettings.API.Settings;
 using KeepCameraAfterDeath.Patches;
+using MyceliumNetworking;
 
 namespace KeepCameraAfterDeath;
 
@@ -12,6 +13,7 @@ namespace KeepCameraAfterDeath;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class KeepCameraAfterDeath : BaseUnityPlugin
 {
+    const uint myceliumNetworkModId = 3051952344; // meaningless, as long as it is the same between all the clients
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
@@ -32,6 +34,16 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         HookAll();
 
         Logger.LogInfo($"{"alexandria-p.KeepCameraAfterDeath"} v{"1.0.0"} has loaded!");
+
+        //MyceliumNetwork.RegisterNetworkObject(this, myceliumNetworkModId);
+
+        Logger.LogInfo($"ALEX: mycelium registered");
+
+    }
+
+    void OnDestroy()
+    {
+        //MyceliumNetwork.DeregisterNetworkObject(this, myceliumNetworkModId);
     }
 
     internal static void HookAll()
@@ -47,17 +59,17 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         HookEndpointManager.RemoveAllOwnedBy(Assembly.GetExecutingAssembly());
     }
 
-    public void SetEnableRewardForCameraReturn(bool rewardEnabled)
+    public void SetPlayerSettingEnableRewardForCameraReturn(bool rewardEnabled)
     {
         PlayerSettingEnableRewardForCameraReturn = rewardEnabled;
     }
 
-    public void SetMetaCoinRewardForCameraReturn(int mcReward)
+    public void SetPlayerSettingMetaCoinReward(int mcReward)
     {
         PlayerSettingMetaCoinReward = mcReward;
     }
 
-    public void SetCashRewardForCameraReturn(int cashReward)
+    public void SetPlayerSettingCashReward(int cashReward)
     {
         PlayerSettingCashReward = cashReward;
     }
@@ -74,18 +86,33 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         PreservedCameraInstanceData = null;
     }
 
-    public void SetPendingRewardForCameraReturn()
+    public void SetPendingRewardForAllPlayers()
     {
-        PendingRewardForCameraReturn = (PlayerSettingCashReward, PlayerSettingMetaCoinReward);
-    }
+        SetPendingRewardForCameraReturn(PlayerSettingCashReward, PlayerSettingMetaCoinReward);
 
+        /*
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: try set rewards for players using RPC");
+
+        // send out host's setting for rewards to all players
+        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(SetPendingRewardForCameraReturn), ReliableType.Reliable, PlayerSettingCashReward, PlayerSettingMetaCoinReward);
+    */
+        }
+
+    //[CustomRPC]
     public void SetPendingRewardForCameraReturn(int cash, int mc)
     {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: set reward for camera return: $" + cash + " and " + mc + "MC");
         PendingRewardForCameraReturn = (cash, mc);
     }
 
     public void ClearPendingRewardForCameraReturn()
     {
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: clear pending reward");
         PendingRewardForCameraReturn = null;
     }
 
@@ -95,7 +122,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         public override void ApplyValue()
         {
             //KeepCameraAfterDeath.Logger.LogInfo($"MC Reward for camera return: {Value}");
-            KeepCameraAfterDeath.Instance.SetEnableRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Instance.SetPlayerSettingEnableRewardForCameraReturn(Value);
         }
 
         public string GetDisplayName() => "Turn on incentives for bringing the camera back to the surface (uses the host's game settings)";
@@ -109,7 +136,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         public override void ApplyValue()
         {
             //KeepCameraAfterDeath.Logger.LogInfo($"Meta Coin (MC) reward for camera return: {Value}");
-            KeepCameraAfterDeath.Instance.SetMetaCoinRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Instance.SetPlayerSettingMetaCoinReward(Value);
         }
 
         public string GetDisplayName() => "Meta Coin (MC) reward for camera return (uses the host's game settings)";
@@ -125,7 +152,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         public override void ApplyValue()
         {
             //KeepCameraAfterDeath.Logger.LogInfo($"Cash reward for camera return: {Value}");
-            KeepCameraAfterDeath.Instance.SetCashRewardForCameraReturn(Value);
+            KeepCameraAfterDeath.Instance.SetPlayerSettingCashReward(Value);
         }
 
         public string GetDisplayName() => "Cash reward for camera return (uses the host's game settings)";
