@@ -20,30 +20,26 @@ public class SurfaceNetworkHandlerPatch
         {
             var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
 
-            if (successfullyBroughtCameraHome)
+            if (MyceliumNetwork.IsHost)
             {
-                KeepCameraAfterDeath.Instance.SetPendingRewardForCameraReturn(true);                
-            }
-            else
-            {
-                // add camera to the surface
-                if (MyceliumNetwork.IsHost)
+                if (successfullyBroughtCameraHome)
                 {
+                    // use host settings to set rewards
+                    if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
+                    {
+                        // todo - RPC
+                        KeepCameraAfterDeath.Instance.SetPendingRewardForCameraReturn();
+                    }
+                }
+                else
+                {
+                    // add camera to the surface
                     self.m_VideoCameraSpawner.SpawnMe(force: true);
                 }
             }
         }
 
         orig(self);
-
-        // HACK for solo player
-        if (PhotonGameLobbyHandler.CurrentObjective is InviteFriendsObjective)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonGameLobbyHandler.Instance.SetCurrentObjective(new LeaveHouseObjective());
-            }
-        }
     }
 
     private static void SurfaceNetworkHandler_OnSlept(On.SurfaceNetworkHandler.orig_OnSlept orig, SurfaceNetworkHandler self)
