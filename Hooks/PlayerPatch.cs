@@ -17,15 +17,12 @@ public class PlayerPatch
     {
         var returnValue = orig(self);
 
-        // TODO - just use the hosts' values for everyone.
-
         if (self.IsLocal)
         {
             // if we respawn after spelunking underground,
             // check if there is a pending reward for our safe return of the camera
             if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening
-                && KeepCameraAfterDeath.Instance.IsRewardForCameraReturnEnabled
-                && KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn)
+                && KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null)
             {
                 AddCashToRoom();
                 AddMCToPlayers();
@@ -38,29 +35,31 @@ public class PlayerPatch
 
         void AddCashToRoom()
         {
-            if (KeepCameraAfterDeath.Instance.CashRewardForCameraReturn <= 0)
+            var hostSpecifiedCashReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.cash;
+            if (hostSpecifiedCashReward <= 0)
             {
                 return;
             }
 
-            UserInterface.ShowMoneyNotification("Cash Received", $"${KeepCameraAfterDeath.Instance.CashRewardForCameraReturn}", MoneyCellUI.MoneyCellType.Revenue);
+            UserInterface.ShowMoneyNotification("Cash Received", $"${hostSpecifiedCashReward}", MoneyCellUI.MoneyCellType.Revenue);
 
-
+            // we only want money to be added to the room once, so let the host do it
             if (MyceliumNetwork.IsHost)
             {
-                KeepCameraAfterDeath.Logger.LogInfo("Awarding revenue for camera return");
-                SurfaceNetworkHandler.RoomStats.AddMoney(KeepCameraAfterDeath.Instance.CashRewardForCameraReturn);
+                KeepCameraAfterDeath.Logger.LogInfo("Awarding revenue for camera return: $" + hostSpecifiedCashReward);
+                SurfaceNetworkHandler.RoomStats.AddMoney(hostSpecifiedCashReward);
             }
         }
 
         void AddMCToPlayers()
         {
-            if (KeepCameraAfterDeath.Instance.MetaCoinRewardForCameraReturn <= 0)
+            var hostSpecifiedMCReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.mc;
+            if (hostSpecifiedMCReward <= 0)
             {
                 return;
             }
-            KeepCameraAfterDeath.Logger.LogInfo("Awarding MC coins for camera return");
-            MetaProgressionHandler.AddMetaCoins(KeepCameraAfterDeath.Instance.MetaCoinRewardForCameraReturn);
+            KeepCameraAfterDeath.Logger.LogInfo("Awarding MC coins for camera return: " + hostSpecifiedMCReward);
+            MetaProgressionHandler.AddMetaCoins(hostSpecifiedMCReward);
         }
     }
 }

@@ -15,12 +15,12 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
-    public bool IsRewardForCameraReturnEnabled { get; private set; }
-    public int MetaCoinRewardForCameraReturn { get; private set; }
-    public int CashRewardForCameraReturn { get; private set; }
+    public bool PlayerSettingEnableRewardForCameraReturn { get; private set; }
+    public int PlayerSettingMetaCoinReward { get; private set; }
+    public int PlayerSettingCashReward { get; private set; }
 
     public ItemInstanceData? PreservedCameraInstanceData { get; private set; } = null;
-    public bool PendingRewardForCameraReturn { get; private set; } = false;
+    public (int cash, int mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
     public bool SearchingForUndergroundPersistentObjects = false;
 
@@ -49,17 +49,17 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
     public void SetEnableRewardForCameraReturn(bool rewardEnabled)
     {
-        IsRewardForCameraReturnEnabled = rewardEnabled;
+        PlayerSettingEnableRewardForCameraReturn = rewardEnabled;
     }
 
     public void SetMetaCoinRewardForCameraReturn(int mcReward)
     {
-        MetaCoinRewardForCameraReturn = mcReward;
+        PlayerSettingMetaCoinReward = mcReward;
     }
 
     public void SetCashRewardForCameraReturn(int cashReward)
     {
-        CashRewardForCameraReturn = cashReward;
+        PlayerSettingCashReward = cashReward;
     }
 
     public void SetPreservedCameraInstanceData(ItemInstanceData data)
@@ -74,14 +74,19 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         PreservedCameraInstanceData = null;
     }
 
-    public void SetPendingRewardForCameraReturn(bool success)
+    public void SetPendingRewardForCameraReturn()
     {
-        PendingRewardForCameraReturn = success;
+        PendingRewardForCameraReturn = (PlayerSettingCashReward, PlayerSettingMetaCoinReward);
+    }
+
+    public void SetPendingRewardForCameraReturn(int cash, int mc)
+    {
+        PendingRewardForCameraReturn = (cash, mc);
     }
 
     public void ClearPendingRewardForCameraReturn()
     {
-        PendingRewardForCameraReturn = false;
+        PendingRewardForCameraReturn = null;
     }
 
     [SettingRegister("KeepCameraAfterDeath Mod Settings")]
@@ -93,9 +98,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetEnableRewardForCameraReturn(Value);
         }
 
-        // TODO - just use the hosts' values for everyone.
-
-        public string GetDisplayName() => "Award incentives for bringing the camera back to the surface (OVERRIDES any values below)";
+        public string GetDisplayName() => "Turn on incentives for bringing the camera back to the surface (uses the host's game settings)";
 
         protected override bool GetDefaultValue() => true;
     }
@@ -109,9 +112,9 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetMetaCoinRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Meta Coin (MC) reward for camera return (uses the client's game settings)";
+        public string GetDisplayName() => "Meta Coin (MC) reward for camera return (uses the host's game settings)";
 
-        protected override int GetDefaultValue() => 25;
+        protected override int GetDefaultValue() => 10;
 
         override protected (int, int) GetMinMaxValue() => (0, 100);
     }

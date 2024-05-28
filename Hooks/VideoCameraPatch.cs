@@ -24,7 +24,7 @@ public class VideoCameraPatch
         // if a camera was lost underground, and this camera is empty
         if (isEvening && noValidVideoDataOnCamera && preservedVideoDataExists)
         {
-            var foundPreservedVIE = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry vie);
+            var foundPreservedVIE = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData!.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry vie);
             var validPreservedDataExists = foundPreservedVIE && vie.videoID.id != Guid.Empty;
 
             if (validPreservedDataExists)
