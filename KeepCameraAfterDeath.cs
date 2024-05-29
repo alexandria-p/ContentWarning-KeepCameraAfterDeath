@@ -96,7 +96,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             return;
         }
 
-        Logger.LogInfo("ALEX: try set rewards for players using RPC");
+        Logger.LogInfo("ALEX: host will try set rewards for players using RPC");
 
         // send out host's setting for rewards to all players
         MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_SetPendingRewardForCameraReturn), ReliableType.Reliable, PlayerSettingCashReward, PlayerSettingMetaCoinReward);
@@ -105,7 +105,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     [CustomRPC]
     public void RPC_SetPendingRewardForCameraReturn(int cash, int mc)
     {
-        KeepCameraAfterDeath.Logger.LogInfo("ALEX: set reward for camera return: $" + cash + " and " + mc + "MC");
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: commanded by host to set reward for camera return: $" + cash + " and " + mc + "MC");
         PendingRewardForCameraReturn = (cash, mc);
     }
 

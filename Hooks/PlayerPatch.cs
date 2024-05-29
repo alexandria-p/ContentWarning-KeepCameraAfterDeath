@@ -1,5 +1,4 @@
 using MyceliumNetworking;
-using System.Collections;
 
 namespace KeepCameraAfterDeath.Patches;
 
@@ -7,36 +6,29 @@ public class PlayerPatch
 {
     internal static void Init()
     {
-        On.Player.Start += Player_Start;
+        On.Player.Update += Player_Update;
     }
 
     // When returning from spelunking, must wait until camera.main and players exist before running rewards 
     // (or SFX that plays when UI message is shown will fail and wreak havoc) 
-    // so we run the code here on Player.Start()
-    private static IEnumerator Player_Start(On.Player.orig_Start orig, Player self)
+    // so we run the code here on Player.Update()
+    private static void Player_Update(On.Player.orig_Update orig, Player self)
     {
-        var returnValue = orig(self);
-
-        if (self.IsLocal)
+        // see if there is a pending reward
+        // (and that the player & room exist)
+        if (KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null 
+            && self.IsLocal 
+            && self.data.playerSetUpAndReady
+            && SurfaceNetworkHandler.RoomStats != null
+            && TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
         {
-            // skip this if you're spawning after quota wasn't met (and roomStats is set to Null)
-            if (SurfaceNetworkHandler.RoomStats != null)
-            {
-                KeepCameraAfterDeath.Logger.LogInfo("ALEX: local player spawn");
-                // if we respawn after spelunking underground,
-                // check if there is a pending reward for our safe return of the camera
-                if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening
-                    && KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null)
-                {
-                    KeepCameraAfterDeath.Logger.LogInfo("ALEX: try add reward");
-                    AddCashToRoom();
-                    AddMCToPlayers();
-                    KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
-                }
-            }            
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: try add reward");
+            AddCashToRoom();
+            AddMCToPlayers();
+            KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
         }
 
-        return returnValue;
+        orig(self);
 
 
         void AddCashToRoom()
