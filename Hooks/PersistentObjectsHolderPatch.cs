@@ -1,7 +1,4 @@
-using Microsoft.Win32.SafeHandles;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace KeepCameraAfterDeath.Patches;
 

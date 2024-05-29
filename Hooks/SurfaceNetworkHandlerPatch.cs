@@ -1,5 +1,4 @@
 using MyceliumNetworking;
-using Photon.Pun;
 
 namespace KeepCameraAfterDeath.Patches;
 
@@ -29,31 +28,23 @@ public class SurfaceNetworkHandlerPatch
             if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceData != null)
             {
                 KeepCameraAfterDeath.Logger.LogInfo("ALEX: respawn camera");
-                /*
-                // destroy any existing cameras
-                VideoCamera[] array = UnityEngine.Object.FindObjectsOfType<VideoCamera>();
-                for (int i = 0; i < array.Length; i++)
-                {
-                    PhotonView component = array[i].transform.parent.GetComponent<PhotonView>();
-                    if (component != null)
-                    {
-                        PhotonNetwork.Destroy(component);
-                    }
-                }
-                */
-                // add camera to the surface
                 self.m_VideoCameraSpawner.SpawnMe(force: true);
             }
         }
         orig(self);
 
-        // wait until after initsurface has run to set if reward should be made, as we need to wait for surface pickups to spawn
-
+        // wait until after initsurface has run,
+        // we need to wait for surface pickups to spawn before checking if a reward should be made
         if (TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening && MyceliumNetwork.IsHost)
         {
-            var successfullyBroughtCameraHome = self.CheckIfCameraIsPresent(includeBrokencamera: true);
-            
-            if (successfullyBroughtCameraHome)
+            // check if camera is present on crew or in divebell
+            var crewHasCamera = self.CheckIfCameraIsPresent(includeBrokencamera: true);
+            // for now, we assume that if there was no footage preserved, then the crew did not drop their camera underground.
+            // there could be a hole in this, if crew has 2 cameras, drop one underground and leave one on the floor of the diving bell. They would not get a reward.
+            // (though...should they really be getting a reward if they left a camera behind?)
+            var divingBellHasCamera = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData == null; // todo - if I could access the internal properties of PersistentObjectsHolderPatch, I'd be able to search the diving bell objects for a camera ....
+
+            if (crewHasCamera || divingBellHasCamera)
             {
                 KeepCameraAfterDeath.Logger.LogInfo("ALEX: brought camera home");
                 // use host settings to set rewards

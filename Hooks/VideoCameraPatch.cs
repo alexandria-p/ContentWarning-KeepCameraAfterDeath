@@ -1,4 +1,3 @@
-using MyceliumNetworking;
 using Photon.Pun;
 using System;
 
@@ -24,7 +23,7 @@ public class VideoCameraPatch
         // if a camera was lost underground, and this camera is empty
         if (isEvening && noValidVideoDataOnCamera && preservedVideoDataExists)
         {
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera interaction - empty camera");
+            KeepCameraAfterDeath.Logger.LogInfo("ALEX: camera interaction - this is an EMPTY camera");
             var foundPreservedVIE = KeepCameraAfterDeath.Instance.PreservedCameraInstanceData!.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry vie);
             var validPreservedDataExists = foundPreservedVIE && vie.videoID.id != Guid.Empty;
 
