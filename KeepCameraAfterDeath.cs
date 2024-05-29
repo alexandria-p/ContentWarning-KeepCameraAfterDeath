@@ -21,7 +21,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public int PlayerSettingMetaCoinReward { get; private set; }
     public int PlayerSettingCashReward { get; private set; }
 
-    public ItemInstanceData? PreservedCameraInstanceData { get; private set; } = null;
+    public ItemInstanceData? PreservedCameraInstanceDataForHost { get; private set; } = null;
     public (int cash, int mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
     private void Awake()
@@ -77,16 +77,17 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         PlayerSettingCashReward = cashReward;
     }
 
-    public void SetPreservedCameraInstanceData(ItemInstanceData data)
+    public void SetPreservedCameraInstanceDataForHost(ItemInstanceData data)
     {
         //data.TryGetEntry<VideoInfoEntry>(out VideoInfoEntry t);
         //KeepCameraAfterDeath.Logger.LogInfo("ALEX: SET PRESERVED CAMERA DATA video ID: " + t != null ? t.videoID.id : "NONE");
-        PreservedCameraInstanceData = data;
+        PreservedCameraInstanceDataForHost = data;
     }
 
     public void ClearPreservedCameraInstanceData()
     {
-        PreservedCameraInstanceData = null;
+        Logger.LogInfo("ALEX: clear preserved camera data");
+        PreservedCameraInstanceDataForHost = null;
     }
 
     public void SetPendingRewardForAllPlayers()
