@@ -1,3 +1,4 @@
+using MyceliumNetworking;
 using System.Collections.Generic;
 
 namespace KeepCameraAfterDeath.Patches;
@@ -9,11 +10,22 @@ public class PersistentObjectsHolderPatch
         On.PersistentObjectsHolder.FindPersistantObjects += PersistentObjectsHolder_FindPersistantObjects;
     }
 
+    // called by PhotonGameLobbyHandler.ReturnToSurface
+    // only the host runs ReturnToSurface & thus runs this function
     private static void PersistentObjectsHolder_FindPersistantObjects(On.PersistentObjectsHolder.orig_FindPersistantObjects orig, PersistentObjectsHolder self)
     {
         var existingCamerasUnderground = FindVideoCamerasInSet(self.m_PersistentObjects);
-        KeepCameraAfterDeath.Logger.LogInfo("ALEX: search for cameras underground");
+        
         orig(self);
+
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        // only continue if this is the host
+
+        KeepCameraAfterDeath.Logger.LogInfo("ALEX: search for cameras underground");
 
         var numObjects = self.m_PersistentObjects.Count;
 
@@ -34,7 +46,7 @@ public class PersistentObjectsHolderPatch
                 }
 
                 KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
-                KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceData(objectInstanceData);
+                KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceDataForHost(objectInstanceData);
 
                 // We don't want to leave a clone of the camera underground when we are gonna make a new one on the surface.
                 // so we want to remove this camera from persistent objects.
