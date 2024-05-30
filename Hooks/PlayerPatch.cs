@@ -14,7 +14,7 @@ public class PlayerPatch
     // so we run the code here on Player.Update()
     private static void Player_Update(On.Player.orig_Update orig, Player self)
     {
-        // see if there is a pending reward
+        // See if there is a pending reward
         // (and that the player & room exist)
         if (KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null 
             && self.IsLocal 
@@ -22,7 +22,6 @@ public class PlayerPatch
             && SurfaceNetworkHandler.RoomStats != null
             && TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
         {
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: try add reward");
             AddCashToRoom();
             AddMCToPlayers();
             KeepCameraAfterDeath.Instance.ClearPendingRewardForCameraReturn();
@@ -34,7 +33,6 @@ public class PlayerPatch
         void AddCashToRoom()
         {
             var hostSpecifiedCashReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.cash;
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: pending cash reward: $"+ hostSpecifiedCashReward);
             if (hostSpecifiedCashReward <= 0)
             {
                 return;
@@ -42,10 +40,9 @@ public class PlayerPatch
 
             UserInterface.ShowMoneyNotification("Cash Received", $"${hostSpecifiedCashReward}", MoneyCellUI.MoneyCellType.Revenue);
 
-            // we only want money to be added to the room once, so let the host do it
+            // We only want money to be added to the room once, so let the host do it
             if (MyceliumNetwork.IsHost)
             {
-                KeepCameraAfterDeath.Logger.LogInfo("Awarding revenue for camera return: $" + hostSpecifiedCashReward);
                 SurfaceNetworkHandler.RoomStats.AddMoney(hostSpecifiedCashReward);
             }
         }
@@ -53,12 +50,11 @@ public class PlayerPatch
         void AddMCToPlayers()
         {
             var hostSpecifiedMCReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.mc;
-            KeepCameraAfterDeath.Logger.LogInfo("ALEX: pending mc reward: " + hostSpecifiedMCReward+ "MC");
             if (hostSpecifiedMCReward <= 0)
             {
                 return;
             }
-            KeepCameraAfterDeath.Logger.LogInfo("Awarding MC coins for camera return: " + hostSpecifiedMCReward);
+            // Client's handle adding their own MC reward, but the amount is set by the host
             MetaProgressionHandler.AddMetaCoins(hostSpecifiedMCReward);
         }
     }

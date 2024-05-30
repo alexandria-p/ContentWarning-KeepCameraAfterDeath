@@ -25,10 +25,7 @@ public class PersistentObjectsHolderPatch
 
         // only continue if this is the host
 
-        KeepCameraAfterDeath.Logger.LogInfo("ALEX: search for cameras underground");
-
         var numObjects = self.m_PersistentObjects.Count;
-
 
         for (int i = numObjects - 1; i >= 0; i--)
         {
@@ -45,7 +42,6 @@ public class PersistentObjectsHolderPatch
                     continue;
                 }
 
-                KeepCameraAfterDeath.Logger.LogInfo("ALEX: found a camera");
                 KeepCameraAfterDeath.Instance.SetPreservedCameraInstanceDataForHost(objectInstanceData);
 
                 // We don't want to leave a clone of the camera underground when we are gonna make a new one on the surface.
@@ -62,6 +58,7 @@ public class PersistentObjectsHolderPatch
         }
     }
 
+    // helper method
     private static List<VideoCamera> FindVideoCamerasInSet(List<PersistentObjectInfo> persistantObjects)
     {
         var list = new List<VideoCamera>();
