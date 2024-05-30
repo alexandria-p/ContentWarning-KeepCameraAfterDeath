@@ -1,10 +1,10 @@
 # Keep Camera After Death - Mod for Content Warning
 
-You no longer need to fear your crew's ineptitude!
+Lost your camera underground? No worries!
 
 In the event of:
 - total crew death, or
-- a major fumble where your cameraman left the camera behind before returning to the diving bell.
+- a major fumble where your cameraman left the camera behind before returning to the diving bell
 
 This mod respawns the camera at its regular spawn position on the surface when the crew returns in the evening. This means you can still export your footage and upload it to spooktube to watch together on the sofa.
 
@@ -20,6 +20,8 @@ Please report this back to me on my GitHub https://github.com/alexandria-p or my
 
 Feel free to tweet at me too if you enjoyed using this mod - especially if you attach the footage you were able to save!
 
+If you would like to report any bugs, join the Content Warning modding discord and find me there.
+
 # Installation steps
 
 ### All crew members must have this mod installed, and follow these steps
@@ -28,7 +30,6 @@ Feel free to tweet at me too if you enjoyed using this mod - especially if you a
 * Install the *r2 Modman* mod manager via *Thunderstore* (click "Manual Download"): https://thunderstore.io/c/content-warning/p/ebkr/r2modman/
 * Run *r2 Modman*
 * Select *Content Warning* as your game in *r2 Modman*
-* Search for and install the *BepInEx* mod (this can be done from inside *r2 Modman*): https://thunderstore.io/c/content-warning/p/BepInEx/BepInExPack/
 
 **Skip to here if you already have the r2 Modman mod manager set up and installed.**
 * Add this mod (KeepCameraAfterDeath) to *r2 Modman* and make sure it is enabled
@@ -86,9 +87,10 @@ https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath
 
 I wholeheartedly encourage you to look at the mod files on my GitHub to learn more about how it was made 💝 I have learnt so much by reading the source code of other mods.
 
-# Dependencies
-
-- Hamunii-AutoHookGenPatcher-1.0.3
+# Dependencies 
+(these will be installed automatically if you use r2 modman)
+- BepInEx-BepInExPack-5.4.2100
+- Hamunii-AutoHookGenPatcher-1.0.4
 - CommanderCat101-ContentSettings-1.2.2
 - RugbugRedfern-MyceliumNetworking-1.0.14
 
