@@ -19,6 +19,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
+    public bool AllowCrewToWatchFootageEvenIfQuotaNotMet { get; private set; }
     public bool PlayerSettingEnableRewardForCameraReturn { get; private set; }
     public int PlayerSettingMetaCoinReward { get; private set; }
     public int PlayerSettingCashReward { get; private set; }
@@ -53,11 +54,17 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         VideoCameraPatch.Init();
         PersistentObjectsHolderPatch.Init();
         PlayerPatch.Init();
+        PhotonGameLobbyHandlerPatch.Init();
     }
 
     internal static void UnhookAll()
     {
         HookEndpointManager.RemoveAllOwnedBy(Assembly.GetExecutingAssembly());
+    }
+
+    public void SetAllowCrewToWatchFootageEvenIfQuotaNotMet(bool allowFinalDayIfQuotaNotMet)
+    {
+        AllowCrewToWatchFootageEvenIfQuotaNotMet = allowFinalDayIfQuotaNotMet;
     }
 
     public void SetPlayerSettingEnableRewardForCameraReturn(bool rewardEnabled)
@@ -183,5 +190,18 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         protected override int GetDefaultValue() => 0;
 
         override protected (int, int) GetMinMaxValue() => (0, 1000);
+    }
+
+    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
+    public class EnableAllowCrewToWatchFootageEvenIfQuotaNotMetSetting : BoolSetting, ICustomSetting
+    {
+        public override void ApplyValue()
+        {
+            KeepCameraAfterDeath.Instance.SetAllowCrewToWatchFootageEvenIfQuotaNotMet(Value);
+        }
+
+        public string GetDisplayName() => "[BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota. Without this setting, the third day ends immediately.  (uses the host's game settings)";
+
+        protected override bool GetDefaultValue() => true;
     }
 }

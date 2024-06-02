@@ -1,4 +1,5 @@
 using MyceliumNetworking;
+using Photon.Pun;
 
 namespace KeepCameraAfterDeath.Patches;
 
@@ -40,12 +41,36 @@ public class SurfaceNetworkHandlerPatch
         }
 
         orig(self);
-    }
 
+        // Do not run NextDay if quota not met on final day in InitSurface
+        // instead, spawn players and let them extract camera.
+        if (MyceliumNetwork.IsHost
+            && KeepCameraAfterDeath.Instance.AllowCrewToWatchFootageEvenIfQuotaNotMet
+            && SurfaceNetworkHandler.RoomStats != null && SurfaceNetworkHandler.RoomStats.IsQuotaDay && !SurfaceNetworkHandler.RoomStats.CalculateIfReachedQuota())
+        {
+            if (!Player.justDied)
+            {
+                SpawnHandler.Instance.SpawnLocalPlayer(Spawns.DiveBell);
+                // 2.6.24 - hospital spawns are handled by SpawnHandler.Start(), so we don't have to handle it here
+            }
+        }
+    }
+    
     // Called by every client's OnSlept, but also when quota fails
     private static void SurfaceNetworkHandler_NextDay(On.SurfaceNetworkHandler.orig_NextDay orig, SurfaceNetworkHandler self)
     {
+        // Do not run NextDay if quota not met on final day in InitSurface
+        // instead, spawn players and let them extract camera.
+        if (MyceliumNetwork.IsHost
+            && KeepCameraAfterDeath.Instance.AllowCrewToWatchFootageEvenIfQuotaNotMet
+            && SurfaceNetworkHandler.RoomStats != null && SurfaceNetworkHandler.RoomStats.IsQuotaDay && !SurfaceNetworkHandler.RoomStats.CalculateIfReachedQuota())
+        {
+            // early out - we do not want to end the day before players get to watch their video.
+            return;
+        }
+
         KeepCameraAfterDeath.Instance.Command_ResetDataforDay();
         orig(self);
     }
+    
 }
