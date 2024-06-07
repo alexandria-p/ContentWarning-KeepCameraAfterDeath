@@ -1,5 +1,4 @@
 using MyceliumNetworking;
-using Photon.Pun;
 
 namespace KeepCameraAfterDeath.Patches;
 
@@ -13,21 +12,20 @@ public class PhotonGameLobbyHandlerPatch
     // this method is run on every client, but only the host should be able to do things with it
     private static void PhotonGameLobbyHandler_SetCurrentObjective(On.PhotonGameLobbyHandler.orig_SetCurrentObjective orig, PhotonGameLobbyHandler self, Objective objective)
     {
-        // Dev note: this is the most fragile part of the code in this mod, as it is vulnerable to breaking if 
-        // the Content Warning devs change or update how the game handles when quota is not met
         if (MyceliumNetwork.IsHost
             && KeepCameraAfterDeath.Instance.AllowCrewToWatchFootageEvenIfQuotaNotMet
-            && SurfaceNetworkHandler.RoomStats != null && SurfaceNetworkHandler.RoomStats.IsQuotaDay && !SurfaceNetworkHandler.RoomStats.CalculateIfReachedQuota())
+            && KeepCameraAfterDeath.Instance.IsFinalDayAndQuotaNotMet())
         {
             // intercept when returning from InitSurface, set objective to Extract video
-            if (objective is GoToBedFailedObjective)
+            if (KeepCameraAfterDeath.Instance.Debug_InitSurfaceActive)
             {
                 objective = new ExtractVideoObjective();
             }
             // intercept when finished watching TV, inform crew they failed quota
+            // the text seems almost identical, so this is just cosmetic future-proofing
             if (objective is GoToBedSuccessObjective)
             {
-                objective = new GoToBedFailedObjective();
+                objective = new GoToBedFailedObjective();                
             }            
         }
 

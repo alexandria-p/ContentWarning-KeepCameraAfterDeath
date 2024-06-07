@@ -27,6 +27,8 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     public ItemInstanceData? PreservedCameraInstanceDataForHost { get; private set; } = null;
     public (int cash, int mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
+    public bool Debug_InitSurfaceActive; // helper boolean
+
     private void Awake()
     {
         Logger = base.Logger;
@@ -34,7 +36,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
         HookAll();
 
-        Logger.LogInfo($"{"alexandria-p.KeepCameraAfterDeath"} v{"1.0.0"} has loaded!");
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
 
     }
 
@@ -148,6 +150,11 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         PendingRewardForCameraReturn = null;
     }
 
+    public bool IsFinalDayAndQuotaNotMet()
+    {
+        return SurfaceNetworkHandler.RoomStats != null && SurfaceNetworkHandler.RoomStats.IsQuotaDay && !SurfaceNetworkHandler.RoomStats.CalculateIfReachedQuota();
+    }
+
 
     [SettingRegister("KeepCameraAfterDeath Mod Settings")]
     public class EnableRewardForCameraReturnSetting : BoolSetting, ICustomSetting
@@ -200,7 +207,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             KeepCameraAfterDeath.Instance.SetAllowCrewToWatchFootageEvenIfQuotaNotMet(Value);
         }
 
-        public string GetDisplayName() => "[BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota. Without this setting, the third day ends immediately.  (uses the host's game settings)";
+        public string GetDisplayName() => "[BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota (uses the host's game settings) \nWithout this setting, the third day ends immediately.";
 
         protected override bool GetDefaultValue() => true;
     }
