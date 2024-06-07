@@ -12,6 +12,13 @@ As a bonus, you can optionally incentivise your players to stay alive and bring 
 
 The host decides whether or not rewards should be distributed for returning with the camera. If they choose to enable rewards, they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
+### Changelog
+
+*v1.0.1*
+- Allow crew to view their camera footage on the final day, even if the footage won't meet quota (turned *on* by default).
+- **The base game will end the third day immediately, if it detects quota has not been met.**
+- **This feature can be toggled on or off in the game menu, in case it interacts with other mods.**
+
 ### Contact Us
 
 🚨 If you found this mod on any site except for *Thunderstore* or *r2 Modman*, then I cannot guarantee the safety of the file you have downloaded! 🚨
