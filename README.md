@@ -15,7 +15,7 @@ The host decides whether or not rewards should be distributed for returning with
 ### Changelog
 
 **v1.0.1**
-- Allow crew to view their camera footage on the final day, even if the footage won't meet quota (turned *on* by default).
+- Allow crew to view their camera footage on the final day, even if the footage won't meet quota (turned **on** by default).
 - *The base game will end the third day immediately, if it detects quota has not been met.*
 - *This feature can be toggled on or off in the game menu, in case it interacts with other mods.*
 
@@ -73,6 +73,10 @@ Remember how this mod searches for & preserves the footage from dropped cameras 
 It only preserves the footage of the *first* newly dropped camera it finds, to load onto the new camera it spawns on the surface.
 
 If your crew drop multiple cameras underground in a single run, then all the remaining cameras will continue to persist in the underground world (as they do in the vanilla game) for your crew to find.
+
+# Known bugs
+
+- If the player jumps off the edge of the world while underground & holding the camera, that camera does not get recovered by this mod.
 
 # Future improvements
 
