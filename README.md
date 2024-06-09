@@ -15,7 +15,7 @@ The host decides whether or not rewards should be distributed for returning with
 ### Changelog
 
 **v1.1.0**
-- Allow crew to view their camera footage on the final day, even if the footage won't meet quota (turned **on** by default).
+- Allow crew to view their camera footage on the final day if they lost their camera underground, even if the footage won't meet quota (turned **on** by default).
 - *The base game will end the third day immediately, if it detects quota has not been met.*
 - *This feature can be toggled on or off in the game menu, in case it interacts with other mods.*
 
