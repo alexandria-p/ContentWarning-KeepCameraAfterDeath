@@ -38,7 +38,7 @@ public class PlayerPatch
                 return;
             }
 
-            UserInterface.ShowMoneyNotification("Cash Received", $"${hostSpecifiedCashReward}", MoneyCellUI.MoneyCellType.Revenue);
+            UserInterface.ShowMoneyNotification("Cash Received", $"${(int)hostSpecifiedCashReward}", MoneyCellUI.MoneyCellType.Revenue);
 
             // We only want money to be added to the room once, so let the host do it
             if (MyceliumNetwork.IsHost)
