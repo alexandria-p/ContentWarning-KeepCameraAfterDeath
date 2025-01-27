@@ -2,10 +2,10 @@ using BepInEx;
 using BepInEx.Logging;
 using System.Reflection;
 using MonoMod.RuntimeDetour.HookGen;
-using ContentSettings.API.Attributes;
-using ContentSettings.API.Settings;
 using KeepCameraAfterDeath.Patches;
 using MyceliumNetworking;
+using Zorro.Settings;
+using Unity.Mathematics;
 
 namespace KeepCameraAfterDeath;
 
@@ -21,11 +21,11 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
     public bool AllowCrewToWatchFootageEvenIfQuotaNotMet { get; private set; }
     public bool PlayerSettingEnableRewardForCameraReturn { get; private set; }
-    public int PlayerSettingMetaCoinReward { get; private set; }
-    public int PlayerSettingCashReward { get; private set; }
+    public float PlayerSettingMetaCoinReward { get; private set; }
+    public float PlayerSettingCashReward { get; private set; }
 
     public ItemInstanceData? PreservedCameraInstanceDataForHost { get; private set; } = null;
-    public (int cash, int mc)? PendingRewardForCameraReturn { get; private set; } = null;
+    public (float cash, float mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
     public bool Debug_InitSurfaceActive; // helper boolean
 
@@ -74,12 +74,12 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         PlayerSettingEnableRewardForCameraReturn = rewardEnabled;
     }
 
-    public void SetPlayerSettingMetaCoinReward(int mcReward)
+    public void SetPlayerSettingMetaCoinReward(float mcReward)
     {
         PlayerSettingMetaCoinReward = mcReward;
     }
 
-    public void SetPlayerSettingCashReward(int cashReward)
+    public void SetPlayerSettingCashReward(float cashReward)
     {
         PlayerSettingCashReward = cashReward;
     }
@@ -106,7 +106,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
     }
 
     [CustomRPC]
-    public void RPC_SetPendingRewardForCameraReturn(int cash, int mc)
+    public void RPC_SetPendingRewardForCameraReturn(float cash, float mc)
     {
         PendingRewardForCameraReturn = (cash, mc);
     }
@@ -155,59 +155,67 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
         return SurfaceNetworkHandler.RoomStats != null && SurfaceNetworkHandler.RoomStats.IsQuotaDay && !SurfaceNetworkHandler.RoomStats.CalculateIfReachedQuota();
     }
 
-
-    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
-    public class EnableRewardForCameraReturnSetting : BoolSetting, ICustomSetting
+    [ContentWarningSetting]
+    public class EnableRewardForCameraReturnSetting : BoolSetting, IExposedSetting
     {
+        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
         public override void ApplyValue()
         {
+            // todo - instance not instantiated yet
             KeepCameraAfterDeath.Instance.SetPlayerSettingEnableRewardForCameraReturn(Value);
         }
 
-        public string GetDisplayName() => "Turn on incentives for bringing the camera back to the surface (uses the host's game settings)";
+        public string GetDisplayName() => "KeepCameraAfterDeath: Turn on incentives for bringing the camera back to the surface (uses the host's game settings)";
 
         protected override bool GetDefaultValue() => true;
     }
 
-    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
-    public class SetMetaCoinRewardForCameraReturnSetting : IntSetting, ICustomSetting
+    [ContentWarningSetting]
+    public class SetMetaCoinRewardForCameraReturnSetting : FloatSetting, IExposedSetting
     {
+        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
         public override void ApplyValue()
         {
             KeepCameraAfterDeath.Instance.SetPlayerSettingMetaCoinReward(Value);
         }
 
-        public string GetDisplayName() => "Meta Coin (MC) reward for camera return (uses the host's game settings)";
+        public string GetDisplayName() => "KeepCameraAfterDeath: Meta Coin (MC) reward for camera return (uses the host's game settings)";
 
-        protected override int GetDefaultValue() => 10;
+        protected override float GetDefaultValue() => 10;
 
-        override protected (int, int) GetMinMaxValue() => (0, 100);
+        protected override float2 GetMinMaxValue() => new float2(0f, 100);
     }
 
-    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
-    public class SetCashRewardForCameraReturnSetting : IntSetting, ICustomSetting
+    [ContentWarningSetting]
+    public class SetCashRewardForCameraReturnSetting : FloatSetting, IExposedSetting
     {
+        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
         public override void ApplyValue()
         {
             KeepCameraAfterDeath.Instance.SetPlayerSettingCashReward(Value);
         }
 
-        public string GetDisplayName() => "Cash reward for camera return (uses the host's game settings)";
+        public string GetDisplayName() => "KeepCameraAfterDeath: Cash reward for camera return (uses the host's game settings)";
 
-        protected override int GetDefaultValue() => 0;
+        protected override float GetDefaultValue() => 0;
 
-        override protected (int, int) GetMinMaxValue() => (0, 1000);
+        protected override float2 GetMinMaxValue() => new float2(0f, 1000);
     }
 
-    [SettingRegister("KeepCameraAfterDeath Mod Settings")]
-    public class EnableAllowCrewToWatchFootageEvenIfQuotaNotMetSetting : BoolSetting, ICustomSetting
+    [ContentWarningSetting]
+    public class EnableAllowCrewToWatchFootageEvenIfQuotaNotMetSetting : BoolSetting, IExposedSetting
     {
+        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
         public override void ApplyValue()
         {
             KeepCameraAfterDeath.Instance.SetAllowCrewToWatchFootageEvenIfQuotaNotMet(Value);
         }
 
-        public string GetDisplayName() => "[BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota (uses the host's game settings) \nWithout this setting, the third day ends immediately.";
+        public string GetDisplayName() => "KeepCameraAfterDeath: [BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota (uses the host's game settings) \nWithout this setting, the third day ends immediately.";
 
         protected override bool GetDefaultValue() => true;
     }
