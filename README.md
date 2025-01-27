@@ -14,6 +14,9 @@ The host decides whether or not rewards should be distributed for returning with
 
 ### Changelog
 
+**v1.2.0**
+- Use CW Settings handler instead of third-party library 
+
 **v1.1.0**
 - Allow crew to view their camera footage on the final day if they lost their camera underground, even if the footage won't meet quota (turned **on** by default).
 - *The base game will end the third day immediately, if it detects quota has not been met.*
@@ -102,7 +105,6 @@ I wholeheartedly encourage you to look at the mod files on my GitHub to learn mo
 (these will be installed automatically if you use r2 modman)
 - BepInEx-BepInExPack-5.4.2100
 - Hamunii-AutoHookGenPatcher-1.0.4
-- CommanderCat101-ContentSettings-1.2.2
 - RugbugRedfern-MyceliumNetworking-1.0.14
 
 # References

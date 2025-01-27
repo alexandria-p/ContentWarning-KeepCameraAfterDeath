@@ -43,7 +43,7 @@ public class PlayerPatch
             // We only want money to be added to the room once, so let the host do it
             if (MyceliumNetwork.IsHost)
             {
-                SurfaceNetworkHandler.RoomStats.AddMoney(hostSpecifiedCashReward);
+                SurfaceNetworkHandler.RoomStats.AddMoney((int)hostSpecifiedCashReward);
             }
         }
 
@@ -55,7 +55,7 @@ public class PlayerPatch
                 return;
             }
             // Client's handle adding their own MC reward, but the amount is set by the host
-            MetaProgressionHandler.AddMetaCoins(hostSpecifiedMCReward);
+            MetaProgressionHandler.AddMetaCoins((int)hostSpecifiedMCReward);
         }
     }
 }
