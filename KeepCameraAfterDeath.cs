@@ -6,6 +6,7 @@ using KeepCameraAfterDeath.Patches;
 using MyceliumNetworking;
 using Zorro.Settings;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace KeepCameraAfterDeath;
 
@@ -13,8 +14,34 @@ namespace KeepCameraAfterDeath;
 // I have set it to "not vanilla"
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class KeepCameraAfterDeath : BaseUnityPlugin
+public class FixR2Modman : BaseUnityPlugin
 {
+    const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
+    internal new static ManualLogSource Logger { get; private set; } = null!;
+
+    private void Awake()
+    {
+        // Jan 2025 - make sure CW update doesnt destroy this mod /////////////////
+        Logger = base.Logger;
+
+        var gameObject = new GameObject("KeepCameraAfterDeathPluginR2ModMan")
+        {
+            hideFlags = HideFlags.HideAndDontSave
+        };
+
+        gameObject.AddComponent<KeepCameraAfterDeath>();
+
+        KeepCameraAfterDeath.Instance.SetLogger(base.Logger);
+
+        DontDestroyOnLoad(gameObject);
+        ////////////////////////////////////////////////////////////////////////////
+    }
+}
+
+public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
+{
+    // Actual mod logic
+
     const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
@@ -29,24 +56,32 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
     public bool Debug_InitSurfaceActive; // helper boolean
 
+    // Jan 2025 - make sure CW update doesnt destroy this mod /////////////////
+    public void SetLogger(ManualLogSource logger)
+    {
+        Logger = logger;
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+
     private void Awake()
     {
-        Logger = base.Logger;
+        // Logger = base.Logger;
         Instance = this;
 
         HookAll();
-
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
-
     }
 
     private void Start()
     {
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON START!");
         MyceliumNetwork.RegisterNetworkObject(Instance, myceliumNetworkModId);
     }
 
     void OnDestroy()
     {
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON DESTROY!");
         MyceliumNetwork.DeregisterNetworkObject(Instance, myceliumNetworkModId);
     }
 
@@ -118,6 +153,7 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
             return;
         }
 
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} reset data for day");
         MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_ResetDataforDay), ReliableType.Reliable);
     }
 
@@ -162,7 +198,6 @@ public class KeepCameraAfterDeath : BaseUnityPlugin
 
         public override void ApplyValue()
         {
-            // todo - instance not instantiated yet
             KeepCameraAfterDeath.Instance.SetPlayerSettingEnableRewardForCameraReturn(Value);
         }
 

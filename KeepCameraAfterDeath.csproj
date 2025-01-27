@@ -88,5 +88,15 @@
 	    <Publicize Include="Assembly-CSharp" />
 		 -->
 	</ItemGroup>
+	
+	<!-- 2025 changes to get mod running on r2Modman -->
+	<ItemGroup>
+		<!-- Use BepInEx's Assembly Publicizer to tell IDEs and the compiler that every field, method, etc. is public, in the game assemblies -->
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+		<!-- Publicize by assembly name -->
+		<Publicize Include="Assembly-CSharp" />
+		<PackageReference Include="RugbugRedfern.MyceliumNetworking.CW" Version="1.0.14" />
+	</ItemGroup>
+	
 </Project>
     
