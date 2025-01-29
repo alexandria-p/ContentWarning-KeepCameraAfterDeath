@@ -4,7 +4,7 @@
         <AssemblyName>alexandria-p.KeepCameraAfterDeath</AssemblyName>
         <Product>KeepCameraAfterDeath</Product>
         <!-- Change to whatever version you're currently on. -->
-        <Version>1.2.0</Version>
+        <Version>1.3.0</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -40,33 +40,37 @@
     </PropertyGroup>
 
     <!-- Primary Package References -->
+	<!-- These are handled by the NuGet Package Manager for this solution -->
     <ItemGroup>
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.*" PrivateAssets="all" />
+		<!-- Use BepInEx's Assembly Publicizer to tell IDEs and the compiler that every field, method, etc. is public, in the game assemblies -->
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all" />
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.10" PrivateAssets="all" />		
 		<PackageReference Include="RugbugRedfern.MyceliumNetworking.CW" Version="1.0.14" PrivateAssets="all" />
+		<!-- Publicize by assembly name -->
+		<Publicize Include="Assembly-CSharp" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
     </ItemGroup>
 
-    <!-- References - Game Assemblies -->
+	<!-- Package References - Game Assemblies -->
     <ItemGroup Condition="$(CI) != 'true'">
         <Reference Include="$(ManagedDirectory)Assembly-CSharp.dll" Publicize="true" Private="false" />
     </ItemGroup>
-
-    <!-- Package References - Game Assemblies -->
     <ItemGroup Condition="$(CI) == 'true'">
         <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" Publicize="true" PrivateAssets="all" />
     </ItemGroup>
 
-    <!-- References - HookGen Assemblies -->
-    <ItemGroup>
-        <Reference Include="$(MMHOOKManaged)MMHOOK_Assembly-CSharp.dll" />
-    </ItemGroup>
+    <!-- Manually reference Hamunii's file included with this project, for "On." hook definitions -->
+	<ItemGroup>
+		<Reference Include="MMHook">
+			<HintPath>.\Dependencies\MMHOOK_Assembly-CSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="Unity.Mathematics">
@@ -81,21 +85,12 @@
 		<Reference Include="PhotonUnityNetworking">
 			<HintPath>$(GameDirectory)\Content Warning_Data\Managed\PhotonUnityNetworking.dll</HintPath>
 		</Reference>
-		<!-- instead of individually importing libraries from CW, just import all .dll files to use in this project.
+		<!-- or instead of individually importing libraries from CW, just import all .dll files to use in this project.
 		This causes circular dependencies for me though :(
         <PackageReference Include="Krafs.Publicizer" Version="2.3.0"/>
 		<Reference Include="$(GameDirectory)\Content Warning_Data\Managed\*.dll" Private="false"/>
 	    <Publicize Include="Assembly-CSharp" />
 		 -->
-	</ItemGroup>
-	
-	<!-- 2025 changes to get mod running on r2Modman -->
-	<ItemGroup>
-		<!-- Use BepInEx's Assembly Publicizer to tell IDEs and the compiler that every field, method, etc. is public, in the game assemblies -->
-		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
-		<!-- Publicize by assembly name -->
-		<Publicize Include="Assembly-CSharp" />
-		<PackageReference Include="RugbugRedfern.MyceliumNetworking.CW" Version="1.0.14" />
 	</ItemGroup>
 	
 </Project>
