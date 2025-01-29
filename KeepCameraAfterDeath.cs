@@ -16,7 +16,7 @@ namespace KeepCameraAfterDeath;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class FixR2Modman : BaseUnityPlugin
 {
-    const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
+    //const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
     private void Awake()
@@ -44,9 +44,8 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
 
     const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
-    internal new static ManualLogSource Logger { get; private set; } = null!;
+    internal static ManualLogSource Logger { get; private set; } = null!;
 
-    public bool AllowCrewToWatchFootageEvenIfQuotaNotMet { get; private set; }
     public bool PlayerSettingEnableRewardForCameraReturn { get; private set; }
     public float PlayerSettingMetaCoinReward { get; private set; }
     public float PlayerSettingCashReward { get; private set; }
@@ -54,7 +53,6 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
     public ItemInstanceData? PreservedCameraInstanceDataForHost { get; private set; } = null;
     public (float cash, float mc)? PendingRewardForCameraReturn { get; private set; } = null;
 
-    public bool Debug_InitSurfaceActive; // helper boolean
 
     // Jan 2025 - make sure CW update doesnt destroy this mod /////////////////
     public void SetLogger(ManualLogSource logger)
@@ -75,13 +73,13 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
 
     private void Start()
     {
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON START!");
+        //Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON START!");
         MyceliumNetwork.RegisterNetworkObject(Instance, myceliumNetworkModId);
     }
 
     void OnDestroy()
     {
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON DESTROY!");
+        //Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} ON DESTROY!");
         MyceliumNetwork.DeregisterNetworkObject(Instance, myceliumNetworkModId);
     }
 
@@ -91,17 +89,11 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         VideoCameraPatch.Init();
         PersistentObjectsHolderPatch.Init();
         PlayerPatch.Init();
-        PhotonGameLobbyHandlerPatch.Init();
     }
 
     internal static void UnhookAll()
     {
         HookEndpointManager.RemoveAllOwnedBy(Assembly.GetExecutingAssembly());
-    }
-
-    public void SetAllowCrewToWatchFootageEvenIfQuotaNotMet(bool allowFinalDayIfQuotaNotMet)
-    {
-        AllowCrewToWatchFootageEvenIfQuotaNotMet = allowFinalDayIfQuotaNotMet;
     }
 
     public void SetPlayerSettingEnableRewardForCameraReturn(bool rewardEnabled)
@@ -238,20 +230,5 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         protected override float GetDefaultValue() => 0;
 
         protected override float2 GetMinMaxValue() => new float2(0f, 1000);
-    }
-
-    [ContentWarningSetting]
-    public class EnableAllowCrewToWatchFootageEvenIfQuotaNotMetSetting : BoolSetting, IExposedSetting
-    {
-        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
-
-        public override void ApplyValue()
-        {
-            KeepCameraAfterDeath.Instance.SetAllowCrewToWatchFootageEvenIfQuotaNotMet(Value);
-        }
-
-        public string GetDisplayName() => "KeepCameraAfterDeath: [BETA] Allow crew to view their camera footage on final day, even if the footage won't reach quota (uses the host's game settings) \nWithout this setting, the third day ends immediately.";
-
-        protected override bool GetDefaultValue() => true;
     }
 }

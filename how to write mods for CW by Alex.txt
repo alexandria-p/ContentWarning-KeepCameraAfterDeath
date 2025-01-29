@@ -1,10 +1,18 @@
 Writing ContentWarning Mods
 
+1.
 - update game on Steam to latest version
 - open (local mod) working directory root in source control
 - open local mod in Visual Studio (needs to be VS cause there is a csproj that we will build to export the mod as a .dll)
-- make sure you don't have another local version of your mod in steamapps/common/Content Warning/Plugins, as this will override your other local working directory.
 
+2.
+CLEARING CACHE
+- make sure you don't have another local version of your mod in 
+steamapps/common/Content Warning/Plugins, or
+C:\Users\Alex (Work Account)\AppData\Roaming\r2modmanPlus-local\ContentWarning\cache, or
+C:\Users\Alex (Work Account)\AppData\Roaming\r2modmanPlus-local\ContentWarning\profiles\alexandria-p\BepInEx\plugins
+
+3.
 r2Modman
 - update all mods
 - disable cloud KeepCameraAFterDeath
@@ -12,11 +20,15 @@ r2Modman
 (if not already imported, go to Settings -> Import local mod)
 W/mods/ContentWarning
 
+4.
 - open ILSpy (after making sure Content Warning is updated to latest version on Steam)/open latest files
+
+5.
 - Start Modded via r2modman
 
 
-- change my version (of local mod) in .csproj
+
+How to Change the version (of local mod) in .csproj
 <PropertyGroup>
     <AssemblyName>alexandria-p.KeepCameraAfterDeath</AssemblyName>
     <Product>KeepCameraAfterDeath</Product>
@@ -25,14 +37,20 @@ W/mods/ContentWarning
 </PropertyGroup>
 
 
-- bypass DontDestroyOnLoad that was iuntroduced by baseunityplugin bepin update
-"Mods now need to create a new GameObject that isn’t destroyed on loading and attach their script to it. Before this was not necessary so most mods didn’t need to add it. Causing pretty much every mod to be broken"
-Add DontDestroyOnLoad(theGameObjectYouJustMade);
-and theGameObjectYouJustMade.hideFlags = HideFlags.HideAndDontSave;
-so it doesn't get unloaded right away on scene change
+How to Build & Test your mod:
+- opened .sln in Visual Studio.
+- in Solution View (solution explorer) - NOT folder view.
+- Set to DEBUG, on toolbar
+- pressed Build&Run
+- .dll was exported, though a error message popped up (not important)
+- .dll is built to local mod "<working_directory_root>/bin/Debug/netstandard2.1/<your_mod_name>.dll"
+- In r2 modman, Settings -> Import Local mod -> choose this .dll file.
+- (make sure you clear cache so old versions aren't hanging around).
+
+- Make sure you export the RELEASE version to send to the thunderstore
 
 
--publishing to Thunderstore:
+How to publish to Thunderstore:
 - replace .dll file with RELEASE build
 - update manifest.json (update version, mod dependencies)
 - replace README with new readme from repo
@@ -43,20 +61,16 @@ so it doesn't get unloaded right away on scene change
 - mods, tools, misc, client-only, host-only, camera mods, bepinex
 
 
-Test:
-opened .sln in Visual Studio.
-in Solution View (solution explorer) - NOT folder view.
-Set to DEBUG, on toolbar
-pressed Build&Run
-.dll was exported, though a error message popped up (not important)
-.dll is built to local mod working directory root/bin/Debug/netstandard2.1/___.dll
+PACKAGES IN VISUAL STUDIO (csproj)
+
+How to setup bepinex as a package source:
+- in VS, open Manage NuGet packages
+- open the cog icon (settings)
+- "NuGet Package Manager -> Package Sources"
+- Add a new Package source, for nuget.org
 
 
-Make sure you export the RELEASE version to send to the thunderstore
-
-
-
-if you are missing a reference/a library that isnt resolving but everyone else seems to be using in their mods, it might be a dll from the ContentWarning base game.
+-if you are missing a reference/a library that isnt resolving but everyone else seems to be using in their mods, it might be a dll from the ContentWarning base game.
 
 reference it in your .csproj:
 <Reference Include="Unity.Mathematics">
@@ -64,8 +78,24 @@ reference it in your .csproj:
 </Reference>
 
 
+
+LOGS
+
+- BepInEx logs will popup in a console window if you start Content Warning modded via r2 modman.
+
 Logs are stored in AppData/LocalLow/Landfall Games/Content Warning, there's logs for the two last games you've played once you close the game. 
 A way of getting to the folder is by pressing your Windows key, pasting %appdata%\..\LocalLow\Landfall Games\Content Warning\ and pressing enter/ok.
+
+
+Updating Thunderstore mods for 2025:
+- bypass DontDestroyOnLoad that was iuntroduced by baseunityplugin bepin update
+"Mods now need to create a new GameObject that isn’t destroyed on loading and attach their script to it. Before this was not necessary so most mods didn’t need to add it. Causing pretty much every mod to be broken"
+Add DontDestroyOnLoad(theGameObjectYouJustMade);
+and theGameObjectYouJustMade.hideFlags = HideFlags.HideAndDontSave;
+so it doesn't get unloaded right away on scene change
+
+ICON
+I use Gemunu Libre for the font in my mod icons.
 
 
 Getting into Modding
