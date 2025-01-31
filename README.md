@@ -110,7 +110,7 @@ I wholeheartedly encourage you to look at the mod files on my GitHub to learn mo
 # Dependencies 
 (these will be installed automatically if you use r2 modman)
 - BepInEx-BepInExPack-5.4.2100
-- alexandria_p-Always_Play_Final_Day-1.0.0
+- alexandria_p-Always_Play_Final_Day-1.0.1
 - RugbugRedfern-MyceliumNetworking-1.0.14
 
 # References
