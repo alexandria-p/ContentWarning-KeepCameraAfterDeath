@@ -97,6 +97,19 @@ so it doesn't get unloaded right away on scene change
 ICON
 I use Gemunu Libre for the font in my mod icons.
 
+Writing mods for Steam
+- run Computery's mod "Content Loader" first on Steam, so it can install Bepinex.
+- you will know it is working if you open AppData/LocalLow/Landfall Games/Content Warning and the logs say "Mod preloader running. Currently loaded mono assemblies are:" and it includes MonoMod and BepInEx.
+- you may need to remove your mod from Content Warning plugins until you complete this step first and have Bepinex safely installed.
+- if you messed up, uninstall and reinstall Content Warning again (delete the directory in steamapps and then run Verify integrity of files via Steam)
+- Then when bepinex is definitely installed, subscribe to any other mods you know yours will depend on
+- Make a folder for your local mod in the following location:
+- \steamapps\common\Content Warning\Plugins\AlwaysPlayFinalDay
+- the icon should be called preview.png
+- include MMHOOK_Assembly-CSharp.dll in the directory root next to your mod .dll file (if you are using MonoMod).
+- upload to the Steam workshop via Content Warning (within the main menu -> Mod Loader)
+- Instead of the ContentWarningPlugin/BepInPlugin running its "Awake" function, this will not happen when loading the .dll in Steam. 
+- To run any init code for your mod, run it in the static instructor for the ContentWarningPlugin/BepInPlugin class.
 
 Getting into Modding
 
