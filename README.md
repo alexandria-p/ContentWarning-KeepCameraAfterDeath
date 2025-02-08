@@ -1,4 +1,17 @@
-# Keep Camera After Death - Mod for Content Warning
+<p align="center"><img src="https://raw.githubusercontent.com/alexandria-p/KeepCameraAfterDeath/main/logo.png" width="150"/></p><h1 align="center">Keep Camera After Death</h1>
+
+[![GitHub Page](https://img.shields.io/badge/GitHub-Thunderstore%20Build-blue?logo=github&style=for-the-badge)](https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath)
+
+[![Thunderstore Page](https://img.shields.io/thunderstore/v/alexandria_p/Keep_Camera_After_Death?style=for-the-badge&logo=thunderstore)](https://thunderstore.io/c/content-warning/p/alexandria_p/Keep_Camera_After_Death/)
+[![Thunderstore Downloads](https://img.shields.io/thunderstore/dt/alexandria_p/Keep_Camera_After_Death?style=for-the-badge&logo=thunderstore&logoColor=white)](https://thunderstore.io/c/content-warning/p/alexandria_p/Keep_Camera_After_Death)
+
+[![GitHub Page](https://img.shields.io/badge/GitHub-Steam%20Build-blue?logo=github&style=for-the-badge)](https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath-Steam)
+
+[![Steam Downloads](https://img.shields.io/steam/downloads/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
+[![Steam Subscriptions](https://img.shields.io/steam/subscriptions/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
+[![Steam Views](https://img.shields.io/steam/views/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
+[![Steam Favorites](https://img.shields.io/steam/favorites/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
+[![Steam Updated](https://img.shields.io/steam/update-date/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
 
 Lost your camera underground? No worries!
 
@@ -13,6 +26,10 @@ As a bonus, you can optionally incentivise your players to stay alive and bring 
 The host decides whether or not rewards should be distributed for returning with the camera. If they choose to enable rewards, they can configure the amount of Meta Coins (MC) and cash revenue the crew should receive.
 
 ### Changelog
+
+**v2.0.0**
+- Allow recovery of multiple cameras in a single round
+- Add compatibility with ContentPOVs (a mod that was overriding the vanilla functionality of the PickupSpawner that I was piggy-backing for this mod)
 
 **v1.3.0**
 - Include MMHOOK_Assembly-CSharp.dll in project files, so package dependency on Hamunii-AutoHookGenPatcher-1.0.4 can be removed (in preparation to upload to Steam workshop)
@@ -75,13 +92,13 @@ Any camera that this mod "saves" will no longer spawn underground on future runs
 
 # Does this mod work if my crew has multiple cameras?
 
-Yes...with a caveat.
+Yes! As of update 2.0.0.
 
 Remember how this mod searches for & preserves the footage from dropped cameras when a run ends?
 
-It only preserves the footage of the *first* newly dropped camera it finds, to load onto the new camera it spawns on the surface.
+It preserves the footage of every newly dropped camera it finds, to load onto each new camera it spawns on the surface.
 
-If your crew drop multiple cameras underground in a single run, then all the remaining cameras will continue to persist in the underground world (as they do in the vanilla game) for your crew to find.
+If your crew drop multiple cameras underground in a single run, then multiple new cameras will spawn on the surface to load the saved data onto.
 
 # Known bugs
 
