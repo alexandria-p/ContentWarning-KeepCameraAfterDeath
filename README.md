@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/alexandria-p/ContentWarning-KeepCameraAfterDeath/main/logo.png" width="150"/></p><h1 align="center">Keep Camera After Death</h1>
+<p align="center"><img src="https://raw.githubusercontent.com/alexandria-p/ContentWarning-KeepCameraAfterDeath/main/logo.png" width="150"/></p><h1 align="center">Keep Camera After Death (Thunderstore build)</h1>
 
 [![GitHub Page](https://img.shields.io/badge/GitHub-Thunderstore%20Build-blue?logo=github&style=for-the-badge)](https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath)
 
@@ -31,7 +31,7 @@ The host decides whether or not rewards should be distributed for returning with
 
 **v2.0.0**
 - Allow recovery of multiple cameras in a single round
-- Add compatibility with ContentPOVs (a mod that was overriding the vanilla functionality of the PickupSpawner that I was piggy-backing for this mod)
+- Add compatibility with ContentPOVs mod
 
 **v1.3.0**
 - Include MMHOOK_Assembly-CSharp.dll in project files, so package dependency on Hamunii-AutoHookGenPatcher-1.0.4 can be removed (in preparation to upload to Steam workshop)
