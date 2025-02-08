@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/alexandria-p/KeepCameraAfterDeath/main/logo.png" width="150"/></p><h1 align="center">Keep Camera After Death</h1>
+<p align="center"><img src="https://raw.githubusercontent.com/alexandria-p/ContentWarning-KeepCameraAfterDeath/main/logo.png" width="150"/></p><h1 align="center">Keep Camera After Death</h1>
 
 [![GitHub Page](https://img.shields.io/badge/GitHub-Thunderstore%20Build-blue?logo=github&style=for-the-badge)](https://github.com/alexandria-p/ContentWarning-KeepCameraAfterDeath)
 
@@ -12,6 +12,8 @@
 [![Steam Views](https://img.shields.io/steam/views/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
 [![Steam Favorites](https://img.shields.io/steam/favorites/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
 [![Steam Updated](https://img.shields.io/steam/update-date/3418022830?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3418022830)
+
+## Description
 
 Lost your camera underground? No worries!
 
