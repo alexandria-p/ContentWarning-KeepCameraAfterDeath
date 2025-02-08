@@ -1,4 +1,5 @@
 using MyceliumNetworking;
+using System.Linq;
 
 namespace KeepCameraAfterDeath.Patches;
 
@@ -22,23 +23,24 @@ public class SurfaceNetworkHandlerPatch
         // When returning from spelunking,
         // Set if camera was brought home
         if (MyceliumNetwork.IsHost && TimeOfDayHandler.TimeOfDay == TimeOfDay.Evening)
-        {            
-            if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceDataForHost != null)
+        {
+            if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceDataCollectionForHost.Any())
             {
-                KeepCameraAfterDeath.Logger.LogInfo("KeepCameraAfterDeath: Found backed-up camera footage");
+                KeepCameraAfterDeath.Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Trying to restore backed-up camera footage");
 
-                // Host spawns new camera
-                self.m_VideoCameraSpawner.SpawnMe(force: true);
+                // Host spawns new cameras
+                KeepCameraAfterDeath.Instance.SpawnCamerasAndRestoreFootage(self);
             }
             else
             {
-                KeepCameraAfterDeath.Logger.LogInfo("KeepCameraAfterDeath: Could not find camera footage to restore");
-                // Only reward players if they do not leave any cameras behind
-                // - uses host settings to set rewards
-                if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
-                {
-                    KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
-                }
+                KeepCameraAfterDeath.Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Could not find any camera footage to restore");
+            }
+
+            // - uses host settings to set rewards
+            if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
+            {
+                // Determine rewards for players
+                KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
             }
         }
 
@@ -46,11 +48,11 @@ public class SurfaceNetworkHandlerPatch
     }
 
     private static void SurfaceNetworkHandler_NextDay(On.SurfaceNetworkHandler.orig_NextDay orig, SurfaceNetworkHandler self)
-    {        
+    {
+        // KeepCameraAfterDeath.Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Surface network handler patch NEXT DAY: reset data for day");
         orig(self);
 
         // camera spawning doesnt happen till later in onSlept, so resetting the data here after NextDay is complete within OnSlept should be fine.
-        KeepCameraAfterDeath.Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} Surface network handler patch NEXT DAY: reset data for day");
         KeepCameraAfterDeath.Instance.Command_ResetDataforDay();
     }
     
