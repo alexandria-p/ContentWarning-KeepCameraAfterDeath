@@ -28,7 +28,7 @@ public class SurfaceNetworkHandlerPatch
             if (KeepCameraAfterDeath.Instance.PlayerSettingEnableRewardForCameraReturn)
             {
                 // Determine rewards for players (before we start spawning cameras and changing numbers)
-                KeepCameraAfterDeath.Instance.SetPendingRewardForAllPlayers();
+                KeepCameraAfterDeath.Instance.Command_SetPendingRewardForAllPlayers();
             }
 
             if (KeepCameraAfterDeath.Instance.PreservedCameraInstanceDataCollectionForHost.Any())

@@ -10,6 +10,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Linq;
 
 namespace KeepCameraAfterDeath;
 
@@ -46,26 +47,31 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
 
     const uint myceliumNetworkModId = 61812; // meaningless, as long as it is the same between all the clients
     public static KeepCameraAfterDeath Instance { get; private set; } = null!;
-    internal static ManualLogSource Logger { get; private set; } = null!;
 
-    public bool PlayerSettingEnableSplitRewardsForMultipleCameras { get; private set; }
+
+    internal static ManualLogSource Logger { get; private set; } = null!;
     public bool PlayerSettingEnableRewardForCameraReturn { get; private set; }
+    public bool PlayerSettingDoNotRewardRecoveredSpookTubeFootage { get; private set; }
     public float PlayerSettingMetaCoinReward { get; private set; }
     public float PlayerSettingCashReward { get; private set; }
+    public bool PlayerSettingEnableSplitRewardsForMultipleCameras { get; private set; }
 
     public List<ItemInstanceData> PreservedCameraInstanceDataCollectionForHost { get; private set; } = new List<ItemInstanceData>();
-    public (float cash, float mc)? PendingRewardForCameraReturn { get; private set; } = null;
+    public List<Guid> RestoredVideoHandleIdsCollectionForHost { get; private set; } = new List<Guid>();
+    public (float cash, float mc)? ClientPendingRewardForCameraReturn { get; private set; } = null;
+    public List<Guid> ClientDoNotPlayTheseSpookTubeVideoWithRewards { get; private set; } = new List<Guid>();
+
 
     public void SetLogger(ManualLogSource logger)
     {
         Logger = logger;
         Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] has loaded!");
     }
-    
+
+
     private void Awake()
     {
         Instance = this;
-
         HookAll();
     }
 
@@ -87,11 +93,17 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         VideoCameraPatch.Init();
         PersistentObjectsHolderPatch.Init();
         PlayerPatch.Init();
+        UploadCompleteStatePatch.Init();
     }
 
     internal static void UnhookAll()
     {
         HookEndpointManager.RemoveAllOwnedBy(Assembly.GetExecutingAssembly());
+    }
+
+    public void SetPlayerSettingDoNotRewardRecoveredSpookTubeFootage(bool settingEnabled)
+    {
+        PlayerSettingDoNotRewardRecoveredSpookTubeFootage = settingEnabled;
     }
 
     public void SetPlayerSettingEnableSplitRewardsForMultipleCameras(bool settingEnabled)
@@ -120,14 +132,25 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         {
             return;
         }
-
         Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Found camera, adding it to list");
 
         PreservedCameraInstanceDataCollectionForHost.Add(data);
         Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Preserved camera count is now {PreservedCameraInstanceDataCollectionForHost.Count}");
     }
 
-    public void SetPendingRewardForAllPlayers()
+    public void SetRestoredVideoHandleIdForHost(Guid id)
+    {
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        RestoredVideoHandleIdsCollectionForHost.Add(id);
+        Command_SetIfClientShouldPlayRestoredSpookTubeVideoWithRewards(id);
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Restored camera count is now {RestoredVideoHandleIdsCollectionForHost.Count}");
+    }
+
+    public void Command_SetPendingRewardForAllPlayers()
     {
         if (!MyceliumNetwork.IsHost)
         {
@@ -163,13 +186,52 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         }
 
         // Send out host's setting for rewards to all players
-        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_SetPendingRewardForCameraReturn), ReliableType.Reliable, cashRewardForThisRound, mcRewardForThisRound);
+        MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_SetClientPendingRewardForCameraReturn), ReliableType.Reliable, cashRewardForThisRound, mcRewardForThisRound);
     }
 
-    [CustomRPC]
-    public void RPC_SetPendingRewardForCameraReturn(float cash, float mc)
+    public void Command_SetIfClientShouldPlayRestoredSpookTubeVideoWithRewards(Guid id)
     {
-        PendingRewardForCameraReturn = (cash, mc);
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        var footageWasRescued = RestoredVideoHandleIdsCollectionForHost.Any(_ => _.Equals(id));
+        var doNotGiveRewardsForVideo = PlayerSettingDoNotRewardRecoveredSpookTubeFootage && footageWasRescued;
+
+        // If this video should not be played with rewards, send out instruction from host to all players to run on their clients
+        if (doNotGiveRewardsForVideo)
+        {
+            Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Send from host to clients: do not allot Spooktube rewards for video ID #{id}.");
+            MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_SetClientDoNotPlayRestoredSpookTubeVideoWithRewards), ReliableType.Reliable, id.ToString());
+        }
+    }
+
+    [CustomRPC] // sent out by host to run on all players
+    public void RPC_SetClientPendingRewardForCameraReturn(float cash, float mc)
+    {
+        ClientPendingRewardForCameraReturn = (cash, mc);
+    }
+
+    [CustomRPC] // sent out by host to run on all players
+    public void RPC_SetClientDoNotPlayRestoredSpookTubeVideoWithRewards(string idString)
+    {
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Received on client from host: do not allot Spooktube rewards for video ID #{idString}.");
+        ClientDoNotPlayTheseSpookTubeVideoWithRewards.Add(new Guid(idString));
+        ListClientDoNotPlayTheseSpookTubeVideoWithRewards();
+    }
+
+    // debugging helper method
+    public void ListClientDoNotPlayTheseSpookTubeVideoWithRewards()
+    {
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] There are {ClientDoNotPlayTheseSpookTubeVideoWithRewards.Count} videos that should not be rewarded by SpookTube.");
+        if (ClientDoNotPlayTheseSpookTubeVideoWithRewards.Count > 0)
+        {
+            ClientDoNotPlayTheseSpookTubeVideoWithRewards.ForEach(videoGuid =>
+            {
+                Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] #{videoGuid}.");
+            });
+        }
     }
 
     public void Command_ResetDataforDay()
@@ -179,11 +241,11 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
             return;
         }
 
-        //Debug.Log($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] reset data for day");
+        //Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] reset data for day");
         MyceliumNetwork.RPC(myceliumNetworkModId, nameof(RPC_ResetDataforDay), ReliableType.Reliable);
     }
 
-    [CustomRPC]
+    [CustomRPC] // sent out by host to run on all players
     public void RPC_ResetDataforDay()
     {
         ClearData();
@@ -191,10 +253,15 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
 
     public void ClearData()
     {
-        // Clear any camera film that was preserved from the lost world on the previous day
-        // Clear pending rewards for camera return
-        ClearAllPreservedCameraInstanceData();
+        // Clear any camera film that was preserved by the host from the lost world on the previous day
+        if (MyceliumNetwork.IsHost)
+        {
+            ClearAllPreservedCameraInstanceData(); // this should already be empty (as they should all have been restored)
+            ClearAllRestoredVideoHandleIds();
+        }
+        // Clear information set onto clients by host
         ClearPendingRewardForCameraReturn();
+        ClearClientDoNotPlayTheseSpookTubeVideoWithRewards();
     }
 
     public void DeletePreservedCameraInstanceDataFromCollection(ItemInstanceData preservedCameraData)
@@ -217,9 +284,25 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         PreservedCameraInstanceDataCollectionForHost.Clear();
     }
 
+    public void ClearAllRestoredVideoHandleIds()
+    {
+        if (!MyceliumNetwork.IsHost)
+        {
+            return;
+        }
+
+        RestoredVideoHandleIdsCollectionForHost.Clear();
+    }
+
     public void ClearPendingRewardForCameraReturn()
     {
-        PendingRewardForCameraReturn = null;
+        ClientPendingRewardForCameraReturn = null;
+    }
+
+    public void ClearClientDoNotPlayTheseSpookTubeVideoWithRewards()
+    {
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Clear ClientDoNotPlayTheseSpookTubeVideoWithRewards collection");
+        ClientDoNotPlayTheseSpookTubeVideoWithRewards.Clear();
     }
 
     public bool IsFinalDayAndQuotaNotMet()
@@ -235,7 +318,7 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
         }
 
         Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] Host is trying to spawn new cameras on surface");
-        //Debug.Log($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] surfacehandler id: {surfaceNetworkHandler.gameObject.GetInstanceID()}");
+        //Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}] surfacehandler id: {surfaceNetworkHandler.gameObject.GetInstanceID()}");
 
         StartCoroutine(SpawnCouroutine(surfaceNetworkHandler));
     }
@@ -347,4 +430,20 @@ public class KeepCameraAfterDeath : MonoBehaviour // prev. BaseUnityPlugin
 
         protected override float2 GetMinMaxValue() => new float2(0f, 1000);
     }
+
+    [ContentWarningSetting]
+    public class EnableAlwaysRewardSpookTubeSetting : BoolSetting, IExposedSetting
+    {
+        public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
+        public override void ApplyValue()
+        {
+            KeepCameraAfterDeath.Instance.SetPlayerSettingDoNotRewardRecoveredSpookTubeFootage(Value);
+        }
+        // todo
+        public string GetDisplayName() => "[KeepCameraAfterDeath] Do not award Spooktube views/money when you watch recovered camera footage on the TV, if the camera footage was lost underground and had to be recovered (uses the host's game settings)";
+
+        protected override bool GetDefaultValue() => false;
+    }
+
 }

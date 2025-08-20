@@ -29,6 +29,9 @@ The host decides whether or not rewards should be distributed for returning with
 
 ### Changelog
 
+**v2.0.1**
+-  Add the option to toggle rewards on/off for recovered footage when watching it on the SpookTube TV
+
 **v2.0.0**
 - Allow recovery of multiple cameras in a single round
 - Add compatibility with ContentPOVs mod

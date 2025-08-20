@@ -16,7 +16,7 @@ public class PlayerPatch
     {
         // See if there is a pending reward
         // (and that the player & room exist)
-        if (KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn != null 
+        if (KeepCameraAfterDeath.Instance.ClientPendingRewardForCameraReturn != null 
             && self.IsLocal 
             && self.data.playerSetUpAndReady
             && SurfaceNetworkHandler.RoomStats != null
@@ -32,7 +32,7 @@ public class PlayerPatch
 
         void AddCashToRoom()
         {
-            var hostSpecifiedCashReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.cash;
+            var hostSpecifiedCashReward = KeepCameraAfterDeath.Instance.ClientPendingRewardForCameraReturn!.Value.cash;
             if (hostSpecifiedCashReward <= 0)
             {
                 return;
@@ -49,7 +49,7 @@ public class PlayerPatch
 
         void AddMCToPlayers()
         {
-            var hostSpecifiedMCReward = KeepCameraAfterDeath.Instance.PendingRewardForCameraReturn!.Value.mc;
+            var hostSpecifiedMCReward = KeepCameraAfterDeath.Instance.ClientPendingRewardForCameraReturn!.Value.mc;
             if (hostSpecifiedMCReward <= 0)
             {
                 return;
