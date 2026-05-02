@@ -17,7 +17,7 @@ Steam
 - ensure any cloud dependencies are updated and enabled
 - disable cloud KeepCameraAfterDeath
 - enable LOCAL keep camera after death
-(if not already imported, go to  \steamapps\common\Content Warning\PluginsKeepCameraAfterDeath, and drop your dll files and preview.png)
+(if not already imported, go to  \steamapps\common\Content Warning\Plugins\KeepCameraAfterDeath, and drop your dll files and preview.png)
 - you will be able to tell it is imported by the logs
 
 
@@ -96,7 +96,7 @@ FOR THUNDERSTORE - How to Build & Test your mod :
 Tips n tricks:
 
 Updating Thunderstore mods for 2025:
-- bypass DontDestroyOnLoad that was iuntroduced by baseunityplugin bepin update
+- bypass DontDestroyOnLoad that was introduced by baseunityplugin bepin update
 "Mods now need to create a new GameObject that isn’t destroyed on loading and attach their script to it. Before this was not necessary so most mods didn’t need to add it. Causing pretty much every mod to be broken"
 Add DontDestroyOnLoad(theGameObjectYouJustMade);
 and theGameObjectYouJustMade.hideFlags = HideFlags.HideAndDontSave;
