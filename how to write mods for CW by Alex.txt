@@ -1,31 +1,43 @@
 Writing ContentWarning Mods
 
-1.
+1. UPDATE GAME TO LATEST
 - update game on Steam to latest version
 - open (local mod) working directory root in source control
 - open local mod in Visual Studio (needs to be VS cause there is a csproj that we will build to export the mod as a .dll)
 
-2.
-CLEARING CACHE
+2. CLEARING CACHE
 - make sure you don't have another local version of your mod in 
 steamapps/common/Content Warning/Plugins, or
 C:\Users\Alex (Work Account)\AppData\Roaming\r2modmanPlus-local\ContentWarning\cache, or
 C:\Users\Alex (Work Account)\AppData\Roaming\r2modmanPlus-local\ContentWarning\profiles\alexandria-p\BepInEx\plugins
 
-3.
-r2Modman
+3.ENABLE LOCAL MOD FOR TESTING
+Steam
 - update all mods
-- disable cloud KeepCameraAFterDeath
+- ensure any cloud dependencies are updated and enabled
+- disable cloud KeepCameraAfterDeath
+- enable LOCAL keep camera after death
+(if not already imported, go to  \steamapps\common\Content Warning\PluginsKeepCameraAfterDeath, and drop your dll files and preview.png)
+- you will be able to tell it is imported by the logs
+
+
+Thunderstore/r2Modman
+- update all mods
+- ensure any cloud dependencies are updated and enabled
+- disable cloud KeepCameraAfterDeath
 - enable LOCAL keep camera after death
 (if not already imported, go to Settings -> Import local mod)
 W/mods/ContentWarning
 
-4.
+4. OPEN DECOMPILED GAME CODE
 - open ILSpy (after making sure Content Warning is updated to latest version on Steam)/open latest files
+(if you've never opened it before, find it here:)
+\steamapps\common\Content Warning\Content Warning_Data\Managed\Assembly-CSharp.dll
 
 5.
-- Start Modded via r2modman
-
+- Start via Steam (Game -> Properties -> Workshop to see enabled CLOUD mods, local mod files will not show here)
+or
+- Start Modded via r2modman, for Thunderstore mods
 
 
 How to Change the version (of local mod) in .csproj
@@ -36,14 +48,71 @@ How to Change the version (of local mod) in .csproj
     <Version>1.2.0</Version>
 </PropertyGroup>
 
+Then, update MyPluginInfo.cs
+namespace KeepCameraAfterDeath;
 
-How to Build & Test your mod:
+internal static class MyPluginInfo
+{
+    internal const string PLUGIN_GUID = "alexandria-p.KeepCameraAfterDeath";
+    internal const string PLUGIN_NAME = "KeepCameraAfterDeath";
+    internal const string PLUGIN_VERSION = "3.0.0";
+}
+
+FOR STEAM - How to Build & Test your mod :
+Writing mods for Steam
+- run Computery's mod "Content Loader" first on Steam, so it can install Bepinex.
+- you will know it is working if you open AppData/LocalLow/Landfall Games/Content Warning and the logs say "Mod preloader running. Currently loaded mono assemblies are:" and it includes MonoMod and BepInEx.
+- you may need to remove your mod from Content Warning plugins until you complete this step first and have Bepinex safely installed.
+- if you messed up, uninstall and reinstall Content Warning again (delete the directory in steamapps and then run Verify integrity of files via Steam)
+- Then when bepinex is definitely installed, subscribe to any other mods you know yours will depend on
+
+Tips n Tricks:
+- Instead of the ContentWarningPlugin/BepInPlugin running its "Awake" function, this will not happen when loading the .dll in Steam. 
+- To run any init code for your mod, run it in the static instructor for the ContentWarningPlugin/BepInPlugin class.
+
+How to build mod's .dll file
 - opened .sln in Visual Studio.
 - in Solution View (solution explorer) - NOT folder view.
 - Set to DEBUG, on toolbar
 - pressed Build&Run
 - .dll was exported, though a error message popped up (not important)
 - .dll is built to local mod "<working_directory_root>/bin/Debug/netstandard2.1/<your_mod_name>.dll"
+
+- Make sure you export the RELEASE version to publish to Steam
+
+How to test locally:
+- Make a folder for your local mod in the following location:
+- \steamapps\common\Content Warning\PluginsKeepCameraAfterDeath
+- the icon should be called preview.png
+- include MMHOOK_Assembly-CSharp.dll in the directory root next to your mod .dll file (if you are using MonoMod).
+
+
+How to publish to Steam:
+- upload to the Steam workshop via Content Warning (within the main menu -> Mod Loader)
+
+
+FOR THUNDERSTORE - How to Build & Test your mod :
+
+Tips n tricks:
+
+Updating Thunderstore mods for 2025:
+- bypass DontDestroyOnLoad that was iuntroduced by baseunityplugin bepin update
+"Mods now need to create a new GameObject that isn’t destroyed on loading and attach their script to it. Before this was not necessary so most mods didn’t need to add it. Causing pretty much every mod to be broken"
+Add DontDestroyOnLoad(theGameObjectYouJustMade);
+and theGameObjectYouJustMade.hideFlags = HideFlags.HideAndDontSave;
+so it doesn't get unloaded right away on scene change
+
+
+How to build mod's .dll file
+- opened .sln in Visual Studio.
+- in Solution View (solution explorer) - NOT folder view.
+- Set to DEBUG, on toolbar
+- pressed Build&Run
+- .dll was exported, though a error message popped up (not important)
+- .dll is built to local mod "<working_directory_root>/bin/Debug/netstandard2.1/<your_mod_name>.dll"
+
+
+How to test locally:
 - In r2 modman, Settings -> Import Local mod -> choose this .dll file.
 - (make sure you clear cache so old versions aren't hanging around).
 
@@ -81,37 +150,23 @@ reference it in your .csproj:
 
 LOGS
 
-- BepInEx logs will popup in a console window if you start Content Warning modded via r2 modman.
-
 Logs are stored in AppData/LocalLow/Landfall Games/Content Warning, there's logs for the two last games you've played once you close the game. 
 A way of getting to the folder is by pressing your Windows key, pasting %appdata%\..\LocalLow\Landfall Games\Content Warning\ and pressing enter/ok.
 
+Logs for Thunderstore mods/r2modman:
+- BepInEx logs will popup in a console window if you start Content Warning modded via r2 modman.
 
-Updating Thunderstore mods for 2025:
-- bypass DontDestroyOnLoad that was iuntroduced by baseunityplugin bepin update
-"Mods now need to create a new GameObject that isn’t destroyed on loading and attach their script to it. Before this was not necessary so most mods didn’t need to add it. Causing pretty much every mod to be broken"
-Add DontDestroyOnLoad(theGameObjectYouJustMade);
-and theGameObjectYouJustMade.hideFlags = HideFlags.HideAndDontSave;
-so it doesn't get unloaded right away on scene change
+Logs for Steam:
+- Install the mod DEV CONSOLE from the Steam workshop for Content Warning
+- Press F1 to show the logs in a real-time overlay
+
 
 ICON
 I use Gemunu Libre for the font in my mod icons.
 
-Writing mods for Steam
-- run Computery's mod "Content Loader" first on Steam, so it can install Bepinex.
-- you will know it is working if you open AppData/LocalLow/Landfall Games/Content Warning and the logs say "Mod preloader running. Currently loaded mono assemblies are:" and it includes MonoMod and BepInEx.
-- you may need to remove your mod from Content Warning plugins until you complete this step first and have Bepinex safely installed.
-- if you messed up, uninstall and reinstall Content Warning again (delete the directory in steamapps and then run Verify integrity of files via Steam)
-- Then when bepinex is definitely installed, subscribe to any other mods you know yours will depend on
-- Make a folder for your local mod in the following location:
-- \steamapps\common\Content Warning\Plugins\AlwaysPlayFinalDay
-- the icon should be called preview.png
-- include MMHOOK_Assembly-CSharp.dll in the directory root next to your mod .dll file (if you are using MonoMod).
-- upload to the Steam workshop via Content Warning (within the main menu -> Mod Loader)
-- Instead of the ContentWarningPlugin/BepInPlugin running its "Awake" function, this will not happen when loading the .dll in Steam. 
-- To run any init code for your mod, run it in the static instructor for the ContentWarningPlugin/BepInPlugin class.
 
-Getting into Modding
+
+GETTING INTO MODDING
 
 I started with Hamunii's youtube video in this link, 
 
